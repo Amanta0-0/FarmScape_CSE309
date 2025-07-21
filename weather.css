@@ -1,0 +1,208 @@
+/* Reset and base styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f8f4;
+  color: #333;
+}
+
+/* Container layout */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 240px;
+  background-color: #2f5d3f;
+  color: white;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 1.8em;
+  text-align: center;
+}
+
+.sidebar nav ul {
+  list-style: none;
+}
+
+.sidebar nav ul li {
+  margin-bottom: 16px;
+}
+
+.sidebar nav ul li a {
+  color: white;
+  padding: 10px 15px;
+  display: block;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;  /* No underline */
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+  background-color: #4caf50;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  margin-left: 240px;
+  padding: 40px 30px;
+  background-color: #f5f8f4;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.main-header h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #2f5d3f;
+  font-weight: 700;
+}
+
+.main-header p {
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Card style for forms and result containers */
+.card {
+  background-color: white;
+  border-left: 8px solid #4caf50;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
+}
+
+/* Form layout */
+.form-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  align-items: end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2f5d3f;
+  font-size: 1rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"] {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
+}
+
+#fetchWeatherBtn {
+  grid-column: 1 / -1;
+  padding: 14px 0;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+#fetchWeatherBtn:hover {
+  background-color: #388e3c;
+}
+
+/* Chart Section */
+#chartSection {
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.chart-container {
+  margin: 25px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  width: 95%;
+  max-width: 720px;
+}
+
+.chart-container h3 {
+  font-weight: 700;
+  color: #4caf50;
+  margin-bottom: 15px;
+}
+
+.chart-container p {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+    box-shadow: none;
+    padding: 20px 10px;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 20px 15px;
+  }
+
+  .form-container {
+    grid-template-columns: 1fr;
+  }
+
+  #fetchWeatherBtn {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-group input[type="text"] {
+    font-size: 0.95rem;
+  }
+
+  #fetchWeatherBtn {
+    font-size: 1rem;
+  }
+}

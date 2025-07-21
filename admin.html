@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FarmScape Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      background-color: #f5f8f4;
+      min-height: 100vh;
+      flex-direction: row;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #2f5d3f;
+      padding-top: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .sidebar nav {
+      flex-grow: 1;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0 10px;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar nav ul li a {
+      display: block;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: #3f805a;
+    }
+
+    .sidebar nav ul li a.active {
+      background-color: #4caf50;
+    }
+
+    .sidebar nav ul li a i {
+      margin-right: 10px;
+      width: 18px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: 250px;
+      padding: 25px 30px 40px 30px;
+      background-color: #f5f8f4;
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: #e7f1ea;
+      padding: 20px 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      color: #2f5d3f;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 16px;
+      font-weight: 500;
+      color: #3a5d32;
+    }
+
+    /* Cards Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 22px 24px;
+      border-left: 6px solid #4caf50;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      cursor: default;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card h3 {
+      color: #2f5d3f;
+      font-size: 20px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .card p {
+      font-size: 15px;
+      color: #555;
+    }
+
+    /* User stats detail */
+    .user-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a7d32;
+    }
+
+    /* Recent Registrations Table */
+    .recent-registrations {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 35px;
+    }
+
+    .recent-registrations h2 {
+      color: #2f5d3f;
+      font-weight: 700;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      font-size: 14px;
+      color: #444;
+    }
+
+    th {
+      background-color: #e8f5e9;
+      color: #2f5d3f;
+      font-weight: 700;
+    }
+
+    tr:hover {
+      background-color: #f1fff1;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      background: white;
+      border-radius: 12px;
+      padding: 18px 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      margin-bottom: 35px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .quick-actions button {
+      flex: 1 1 150px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .quick-actions button:hover {
+      background-color: #388e3c;
+    }
+
+    /* System alerts */
+    .alerts {
+      background: #fff3f3;
+      border-left: 6px solid #d32f2f;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #b71c1c;
+      font-weight: 600;
+      margin-bottom: 35px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      padding: 15px 0;
+      margin-top: auto;
+      user-select: none;
+    }
+
+  </style>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2>🌿 FarmScape</h2>
+    <nav>
+      <ul>
+        <li><a href="#" class="active"><i class="fas fa-user"></i> User Management</a></li>
+        <li><a href="#"><i class="fas fa-cogs"></i> System Settings</a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i> Analytics & Reports</a></li>
+        <li><a href="#"><i class="fas fa-seedling"></i> Crop Monitoring</a></li>
+        <li><a href="#"><i class="fas fa-store"></i> Marketplace</a></li>
+        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <h1>Welcome, Admin</h1>
+      <p>Manage users, system settings, and monitor farm-wide activity</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Total Users</h3>
+        <p>52 registered users</p>
+        <div class="user-stats">
+          <span>Farmers: 30</span>
+          <span>Consultants: 12</span>
+          <span>Buyers: 10</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Pending Requests</h3>
+        <p>7 new registration approvals</p>
+      </div>
+      <div class="card">
+        <h3>Reports Generated</h3>
+        <p>24 reports this month</p>
+      </div>
+      <div class="card">
+        <h3>Consultation Logs</h3>
+        <p>12 expert consultations completed</p>
+      </div>
+      <div class="card">
+        <h3>Marketplace Items</h3>
+        <p>18 items listed for sale</p>
+        <div class="user-stats">
+          <span>Vegetables: 8</span>
+          <span>Fruits: 5</span>
+          <span>Seeds & Fertilizers: 5</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="recent-registrations">
+      <h2>Recent User Registrations</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Registration Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sarah Williams</td>
+            <td>Farmer</td>
+            <td>2025-07-10</td>
+            <td><span style="color:#4caf50; font-weight:700;">Approved</span></td>
+          </tr>
+          <tr>
+            <td>Michael Lee</td>
+            <td>Consultant</td>
+            <td>2025-07-12</td>
+            <td><span style="color:#fbc02d; font-weight:700;">Pending</span></td>
+          </tr>
+          <tr>
+            <td>Ayesha Rahman</td>
+            <td>Buyer</td>
+            <td>2025-07-13</td>
+            <td><span style="color:#4caf50; font-weight:700;">Approved</span></td>
+          </tr>
+          <tr>
+            <td>David Kim</td>
+            <td>Farmer</td>
+            <td>2025-07-15</td>
+            <td><span style="color:#f44336; font-weight:700;">Rejected</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="alerts">
+      <p><i class="fas fa-exclamation-triangle"></i> System maintenance scheduled for 2025-07-25 10:00 PM - 12:00 AM</p>
+    </section>
+
+    <section class="quick-actions">
+      <button><i class="fas fa-user-plus"></i> Add New User</button>
+      <button><i class="fas fa-file-alt"></i> Generate Report</button>
+      <button><i class="fas fa-sync-alt"></i> Sync Marketplace</button>
+      <button><i class="fas fa-cogs"></i> Configure Settings</button>
+    </section>
+
+    <footer>
+      &copy; 2025 FarmScape. All rights reserved.
+    </footer>
+  </div>
+
+</body>
+</html>

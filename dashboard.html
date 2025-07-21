@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmScape Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>🌿 FarmScape</h2>
+      <nav>
+        <ul>
+          <li><a class="active" href="dashboard.html">Dashboard</a></li>
+          <li><a href="cropmanagement.html">Crop Management</a></li>
+          <li><a href="taskautomation.html">Task Management</a></li>
+          <li><a href="inventory.html">Inventory Management</a></li>
+          <li><a href="weather.html">Weather Insights</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="expert.html">Expert Consultation</a></li>
+          <li><a href="analytics.html">Data Analytics & Reports</a></li>
+          <li><a href="community.html">Community Forum & Chat</a></li>
+          <li><a href="notification.html">Notifications</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <h1>Welcome to FarmScape</h1>
+        <p>Smart Rooftop Farm Monitoring Dashboard</p>
+      </header>
+
+      <section class="cards">
+        <div class="card">
+          <h3>🌱 Active Crops</h3>
+          <p id="cropsPlanted">0</p>
+        </div>
+        <div class="card">
+          <h3>📋 Tasks Pending</h3>
+          <p id="tasksPending">0</p>
+        </div>
+        <div class="card">
+          <h3>🚿 Water Usage</h3>
+          <p id="waterUsage">--</p>
+        </div>
+        <div class="card">
+          <h3>☁️ Weather Alert</h3>
+          <p id="weatherAlert">--</p>
+        </div>
+        <div class="card">
+          <h3>🧺 Inventory Status</h3>
+          <p id="inventoryStatus">--</p>
+        </div>
+        <div class="card">
+          <h3>📈 Data Analytics & Reports</h3>
+          <p id="reportSummary">Weekly trends available</p>
+        </div>
+        <div class="card">
+          <h3>🔄 Refresh Data</h3>
+          <p>
+            <button id="refreshDashboard" style="padding: 10px 15px; background: #4caf50; border: none; border-radius: 6px; color: white; cursor: pointer;">
+              Refresh Data
+            </button>
+          </p>
+        </div>
+      </section>
+
+      <section class="cards" style="margin-top: 30px;">
+        <div class="card" style="grid-column: span 2;">
+          <h3>🏆 Best Performing Crops</h3>
+          <ul id="topCropsList"></ul>
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+          <h3>📅 Today's Task Summary</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Irrigation - Tomatoes</td>
+                <td>8:00 AM</td>
+                <td>✅ Done</td>
+              </tr>
+              <tr>
+                <td>Weeding - Lettuce beds</td>
+                <td>11:00 AM</td>
+                <td>🔄 Pending</td>
+              </tr>
+              <tr>
+                <td>Fertilizing - Spinach</td>
+                <td>3:00 PM</td>
+                <td>🔄 Pending</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

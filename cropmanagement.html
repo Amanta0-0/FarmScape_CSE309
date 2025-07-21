@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmScape - Crop Management</title>
+  <link rel="stylesheet" href="cropmanagement.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>🌿 FarmScape</h2>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a class="active" href="cropmanagement.html">Crop Management</a></li>
+          <li><a href="taskautomation.html">Task Management</a></li>
+          <li><a href="inventory.html">Inventory Management</a></li>
+          <li><a href="weather.html">Weather Insights</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="expert.html">Expert Consultation</a></li>
+          <li><a href="analytics.html">Data Analytics & Reports</a></li>
+          <li><a href="community.html">Community Forum & Chat</a></li>
+          <li><a href="notification.html">Notifications</a></li>
+
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <h1>FarmScape Crop Management</h1>
+      </header>
+
+      <section class="form-section">
+        <h2>Add / Edit Crop Lifecycle</h2>
+        <form id="cropForm">
+          <input type="text" id="cropType" placeholder="Crop Type (e.g., Tomato, Rice)" required />
+          <input type="date" id="plantingDate" placeholder="Planting Date" required />
+          <input type="text" id="growthStage" placeholder="Growth Stage (e.g., Germination)" required />
+
+          <label for="wateringSchedule">Next Watering Date:</label>
+          <input type="date" id="wateringSchedule" required />
+
+          <label for="fertilizationDate">Next Fertilization Date:</label>
+          <input type="date" id="fertilizationDate" required />
+
+          <label for="harvestingDate">Expected Harvest Date:</label>
+          <input type="date" id="harvestingDate" required />
+
+          <button type="submit">Save Crop</button>
+        </form>
+      </section>
+
+      <section class="list-section">
+        <h2>Crop Records</h2>
+        <div id="cropList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="cropmanagement.js"></script>
+</body>
+</html>

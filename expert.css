@@ -1,0 +1,132 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f8f4;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background-color: #2f5d3f;
+  color: #fff;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  font-size: 24px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  margin-bottom: 18px;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  display: block;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+  background-color: #4caf50;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+  background-color: #f5f8f4;
+}
+
+.main-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.main-header h1 {
+  font-size: 28px;
+  color: #2f5d3f;
+  margin-bottom: 10px;
+}
+
+.main-header p {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* Consultation Form */
+.consultation-form-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.consultation-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #2f5d3f;
+}
+
+.consultation-form input,
+.consultation-form select,
+.consultation-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fdfdfd;
+}
+
+.consultation-form textarea {
+  resize: vertical;
+}
+
+.consultation-form button {
+  margin-top: 20px;
+  width: 100%;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.consultation-form button:hover {
+  background-color: #43a047;
+}

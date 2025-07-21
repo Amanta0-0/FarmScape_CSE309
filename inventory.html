@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory Management - FarmScape</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f8f4;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: #2f5d3f;
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 1.8em;
+      text-align: center;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 16px;
+    }
+
+    .sidebar nav ul li a {
+      color: white;
+      padding: 10px 15px;
+      display: block;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: #3f805a;
+    }
+
+    .sidebar nav ul li a.active {
+      background-color: #4caf50;
+    }
+
+    .main {
+      flex: 1;
+      padding: 40px;
+      background-color: #f5f8f4;
+    }
+
+    .main-header {
+      text-align: center;
+    }
+
+    .main-header h1 {
+      font-size: 2rem;
+      color: #2f5d3f;
+      margin-bottom: 0.5rem;
+    }
+
+    .main-header p {
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    .inventory-container {
+      display: flex;
+      gap: 50px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .inventory-form,
+    .inventory-list {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 35px 30px;
+      width: 48%;
+      box-sizing: border-box;
+      border: 1px solid #b6d48b;
+    }
+
+    .inventory-form:hover,
+    .inventory-list:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .inventory-form h3,
+    .inventory-list h3 {
+      color: #2f5d3f;
+      margin-bottom: 20px;
+    }
+
+    .inventory-form label {
+      font-weight: 500;
+      color: #2f5d3f;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      display: block;
+    }
+
+    .inventory-form input,
+    .inventory-form select {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      border-radius: 8px;
+      border: 1px solid #b6d48b;
+      font-size: 1rem;
+      background: #f9fff7;
+      box-sizing: border-box;
+    }
+
+    .inventory-form input:focus,
+    .inventory-form select:focus {
+      border-color: #4caf50;
+      box-shadow: 0 0 10px 2px #4caf50;
+      outline: none;
+    }
+
+    .inventory-form button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    .inventory-form button:hover {
+      background-color: #388e3c;
+    }
+
+    #inventoryList {
+      list-style: none;
+      padding-left: 0;
+      max-height: 500px;
+      overflow-y: auto;
+      border-top: 3px solid #a8d271;
+      border-radius: 0 0 20px 20px;
+    }
+
+    #inventoryList li {
+      padding: 16px 22px;
+      margin-bottom: 16px;
+      background: #f9fff7;
+      border: 1px solid #b6d48b;
+      border-radius: 12px;
+      color: #2f5d3f;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    #inventoryList li:hover {
+      background: #e9f7e0;
+      cursor: pointer;
+    }
+
+    #inventoryList li em {
+      font-size: 0.9rem;
+      color: #556f33;
+    }
+
+    #inventoryList::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    #inventoryList::-webkit-scrollbar-track {
+      background: #dbe9be;
+      border-radius: 10px;
+    }
+
+    #inventoryList::-webkit-scrollbar-thumb {
+      background: #7baf35;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        text-align: center;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .inventory-container {
+        flex-direction: column;
+      }
+
+      .inventory-form,
+      .inventory-list {
+        width: 100%;
+      }
+
+      #inventoryList {
+        max-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>🌿 FarmScape</h2>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="cropmanagement.html">Crop Management</a></li>
+          <li><a href="taskautomation.html">Task Management</a></li>
+          <li><a class="active" href="inventory.html">Inventory Management</a></li>
+          <li><a href="weather.html">Weather Insights</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="expert.html">Expert Consultation</a></li>
+          <li><a href="analytics.html">Data Analytics & Reports</a></li>
+          <li><a href="community.html">Community Forum & Chat</a></li>
+          <li><a href="notification.html">Notifications</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <h1>Inventory Management</h1>
+        <p>Track and manage your farming inventory such as seeds, tools, fertilizers, and more.</p>
+      </header>
+
+      <div class="inventory-container">
+        <section class="inventory-form">
+          <h3>Add Inventory Item</h3>
+          <form id="inventoryForm">
+            <label for="itemName">Item Name:</label>
+            <select id="itemName" required>
+              <option value="">Select Item</option>
+              <option value="Tomato Seeds">Tomato Seeds</option>
+              <option value="Urea Fertilizer">Urea Fertilizer</option>
+              <option value="Shovel">Shovel</option>
+              <option value="Sprayer">Sprayer</option>
+              <option value="Organic Compost">Organic Compost</option>
+              <option value="Water Pipe">Water Pipe</option>
+              <option value="Potash Fertilizer">Potash Fertilizer</option>
+              <option value="Mulching Sheet">Mulching Sheet</option>
+              <option value="Seed Tray">Seed Tray</option>
+              <option value="Pesticide Bottle">Pesticide Bottle</option>
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" min="1" required />
+
+            <label for="unit">Unit:</label>
+            <select id="unit" required>
+              <option value="kg">kg</option>
+              <option value="liters">liters</option>
+              <option value="pieces">pieces</option>
+              <option value="bags">bags</option>
+            </select>
+
+            <label for="note">Note:</label>
+            <input type="text" id="note" placeholder="Optional note" />
+
+            <button type="submit">Add Item</button>
+          </form>
+        </section>
+
+        <section class="inventory-list">
+          <h3>Inventory List</h3>
+          <ul id="inventoryList"></ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+
+    function displayInventory() {
+      const inventoryList = document.getElementById('inventoryList');
+      inventoryList.innerHTML = '';
+
+      inventory.forEach((item) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${item.name}</strong> - ${item.quantity} ${item.unit}
+                        ${item.note ? `<br><em>Note: ${item.note}</em>` : ''}`;
+        inventoryList.appendChild(li);
+      });
+    }
+
+    document.getElementById('inventoryForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('itemName').value;
+      const quantity = document.getElementById('quantity').value;
+      const unit = document.getElementById('unit').value;
+      const note = document.getElementById('note').value;
+
+      if (name && quantity && unit) {
+        inventory.push({ name, quantity, unit, note });
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        displayInventory();
+        this.reset();
+      }
+    });
+
+    displayInventory();
+  </script>
+</body>
+</html>

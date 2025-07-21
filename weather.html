@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FarmScape - Weather Insights</title>
+    <link rel="stylesheet" href="weather.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>🌿 FarmScape</h2>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="crop-management.html">Crop Management</a></li>
+          <li><a href="taskautomation.html">Task Automation</a></li>
+          <li><a href="inventory.html">Inventory Management</a></li>
+          <li><a class="active" href="weather.html">Weather Insights</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="expert.html">Expert Consultation</a></li>
+          <li><a href="analytics.html">Data Analytics</a></li>
+          <li><a href="community.html">Community Forum</a></li>
+          <li><a href="notification.html">Notifications</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <h1>Weather Insights for Smart Rooftop Farming</h1>
+        <p>Get detailed weather forecasts and suggested farming activities.</p>
+      </header>
+
+      <section class="card form-container">
+        <div class="form-group">
+          <label for="locationInput">📍 Location:</label>
+          <input type="text" id="locationInput" placeholder="Enter your city (e.g., Dhaka)" />
+        </div>
+        <div class="form-group">
+          <label for="dateInput">📅 Select Date:</label>
+          <input type="date" id="dateInput" />
+        </div>
+        <button id="fetchWeatherBtn">🌤 Get Weather Insights</button>
+      </section>
+
+      <section id="chartSection" class="card">
+        <div class="chart-container">
+          <h3>📈 Weather Forecast</h3>
+          <p id="weatherDetails">Weather data will appear here based on your input.</p>
+        </div>
+
+        <div class="chart-container">
+          <h3>🌿 Suggested Farming Activities</h3>
+          <p id="activitySuggestions">Farming suggestions will be shown here after weather fetch.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="weather.js"></script>
+</body>
+</html>

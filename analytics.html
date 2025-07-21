@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmScape - Data Analytics</title>
+  <link rel="stylesheet" href="analytics.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>🌿 FarmScape</h2>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="cropmanagement.html">Crop Management</a></li>
+          <li><a href="taskautomation.html">Task Management</a></li>
+          <li><a href="inventory.html">Inventory Management</a></li>
+          <li><a href="weather.html">Weather Insights</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="expert.html">Expert Consultation</a></li>
+          <li><a class="active" href="analytics.html">Data Analytics & Reports</a></li>
+          <li><a href="community.html">Community Forum & Chat</a></li>
+          <li><a href="notification.html">Notifications</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="main-header">
+        <h1>Data Analytics & Reports</h1>
+        <p>Analyze and track your farm's performance with detailed reports</p>
+      </header>
+
+      <section class="form-container">
+        <h2>Enter Farm Data</h2>
+        <form id="farmForm">
+          <label for="cropName">Crop Name:</label>
+          <input type="text" id="cropName" name="cropName" required />
+
+          <label for="plantingDate">Planting Date:</label>
+          <input type="date" id="plantingDate" name="plantingDate" required />
+
+          <label for="yield">Yield (kg):</label>
+          <input type="number" id="yield" name="yield" required />
+
+          <label for="health">Health (%):</label>
+          <input type="number" id="health" name="health" required />
+
+          <button type="submit">Submit</button>
+        </form>
+      </section>
+
+      <section id="chartSection">
+        <div class="chart-container">
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="healthPieChart"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="analytics.js"></script>
+</body>
+</html>

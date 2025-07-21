@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmScape - Community Forum</title>
+  <link rel="stylesheet" href="community.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>🌿 FarmScape</h2>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="cropmanagement.html">Crop Management</a></li>
+          <li><a href="taskautomation.html">Task Management</a></li>
+          <li><a href="inventory.html">Inventory Management</a></li>
+          <li><a href="weather.html">Weather Insights</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="expert.html">Expert Consultation</a></li>
+          <li><a href="analytics.html">Data Analytics & Reports</a></li>
+          <li><a class="active" href="community.html">Community Forum & Chat</a></li>
+          <li><a href="notification.html">Notifications</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <section class="header-section">
+        <header class="main-header">
+          <h1>FarmScape Community Forum</h1>
+          <p>Ask questions, share experiences, and collaborate with fellow farmers.</p>
+        </header>
+      </section>
+
+      <section class="forum-input">
+        <textarea id="userInput" placeholder="Ask a question or share your experience..."></textarea>
+        <button id="outputButton">Post Question/Experience</button>
+      </section>
+
+      <section class="forum-output">
+        <p>View responses on the <a href="communityForum2.html" id="forumLink">Community Forum Output</a></p>
+      </section>
+
+      <button id="messageButton">Real-time Chat</button>
+      <div id="chatModal" class="chat-container" style="display: none;">
+        <div class="chat-box" id="chatBox"></div>
+        <input type="text" id="chatInput" placeholder="Type a message..." />
+        <button id="sendButton">Send</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="community.js"></script>
+</body>
+</html>

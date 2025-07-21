@@ -1,0 +1,249 @@
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f8f4;
+  color: #333;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #2f5d3f;
+  color: white;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+.sidebar nav ul {
+  list-style: none;
+}
+
+.sidebar nav ul li {
+  margin-bottom: 16px;
+}
+
+.sidebar nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+  background-color: #4caf50;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 240px;
+  padding: 40px 30px;
+  background-color: #f5f8f4;
+  min-height: 100vh;
+}
+
+.main-header {
+  margin-bottom: 30px;
+}
+
+.main-header h1 {
+  font-size: 2em;
+  color: #2f5d3f;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.main-header p {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.main-header input[type="text"] {
+  padding: 10px;
+  width: 100%;
+  max-width: 350px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+/* Card Style */
+.card {
+  background-color: white;
+  border-left: 8px solid #4caf50;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
+}
+
+.card h2 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+#productForm input,
+#productForm select,
+#productForm textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Upload Image Styling - FIXED gap issue */
+label[for="productImage"] {
+  display: inline-block;
+  vertical-align: middle;
+  font-weight: 600;
+  margin-right: 10px; /* spacing between label and input */
+}
+
+#productForm input[type="file"] {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 6px 12px; /* reduced padding */
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: #333;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+}
+
+#productForm input[type="file"]::-webkit-file-upload-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0;
+}
+
+#productForm input[type="file"]::file-selector-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0;
+}
+
+#productForm button {
+  grid-column: 1 / -1;
+  padding: 14px 0;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+#productForm button:hover {
+  background-color: #388e3c;
+}
+
+/* Products */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.product-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.product-card h3 {
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+.product-card p {
+  color: #444;
+  font-size: 0.95rem;
+  margin-bottom: 5px;
+}
+
+.product-card .price {
+  color: #4caf50;
+  font-weight: bold;
+  margin-top: auto;
+}
+
+.product-card button {
+  margin-top: 12px;
+  padding: 10px;
+  border: none;
+  background-color: #2e7d32;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.product-card button:hover {
+  background-color: #1b5e20;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
