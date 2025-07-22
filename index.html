@@ -117,35 +117,25 @@
       const message = document.getElementById('message');
 
       if (!role) {
+        message.style.color = "red";
         message.textContent = "Please select a role.";
         return;
       }
 
-      // Simulated credentials
-      if (username === "f" && password === "1234" && role.value === "farmer") {
+      if (username && password) {
         message.style.color = "green";
-        message.textContent = "Welcome, Farmer!";
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1000);
+        message.textContent = `Welcome, ${role.value.charAt(0).toUpperCase() + role.value.slice(1)}!`;
 
-      } else if (username === "c" && password === "1234" && role.value === "consultant") {
-        message.style.color = "green";
-        message.textContent = "Welcome, Consultant!";
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          if (role.value === "admin") {
+            window.location.href = "admin.html";
+          } else {
+            window.location.href = "dashboard.html";
+          }
         }, 1000);
-
-      } else if (username === "admin" && password === "admin123" && role.value === "admin") {
-        message.style.color = "green";
-        message.textContent = "Welcome, Admin!";
-        setTimeout(() => {
-          window.location.href = "admin.html";
-        }, 1000);
-
       } else {
         message.style.color = "red";
-        message.textContent = "Invalid credentials.";
+        message.textContent = "Username and password cannot be empty.";
       }
     });
   </script>
