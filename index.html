@@ -6,7 +6,7 @@
   <title>FarmScape - Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Base styles matching dashboard theme */
+    /* Reset and base styling */
     * {
       margin: 0;
       padding: 0;
@@ -16,386 +16,179 @@
 
     body {
       background-color: #f5f8f4;
+      color: #333;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-      background-size: cover;
-      background-position: center;
-      background-blend-mode: overlay;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
     }
 
     /* Login container */
     .login-container {
-      width: 380px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(47, 93, 63, 0.2);
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
       overflow: hidden;
-      position: relative;
-      z-index: 1;
     }
 
-    /* Header section */
     .login-header {
       background-color: #2f5d3f;
       color: white;
       padding: 30px;
       text-align: center;
-      position: relative;
     }
 
-    .login-header::after {
-      content: '';
-      position: absolute;
-      bottom: -20px;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background: white;
-      border-radius: 20px 20px 0 0;
-      z-index: -1;
-    }
-
-    .login-header h2 {
-      font-size: 1.8rem;
+    .login-header h1 {
+      font-size: 2em;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .login-header p {
-      font-size: 0.9rem;
-      opacity: 0.9;
+      opacity: 0.8;
     }
 
-    /* Form styling */
-    .login-form {
+    .login-content {
       padding: 30px;
     }
 
+    /* Form styles */
     .form-group {
       margin-bottom: 20px;
-      position: relative;
     }
 
-    .form-group label {
+    label {
       display: block;
       margin-bottom: 8px;
       color: #2f5d3f;
       font-weight: 600;
-      font-size: 0.9rem;
     }
 
-    .form-control {
+    input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.3s;
-      background-color: #f9f9f9;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s;
     }
 
-    .form-control:focus {
+    input:focus {
       border-color: #4caf50;
       outline: none;
-      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-      background-color: white;
     }
 
-    .input-icon {
-      position: absolute;
-      right: 15px;
-      top: 40px;
-      color: #888;
-    }
-
-    /* Role selector */
-    .role-selector {
-      margin: 25px 0;
-    }
-
-    .role-selector label {
-      display: block;
-      margin-bottom: 15px;
-      position: relative;
-      padding-left: 30px;
-      cursor: pointer;
-      color: #333;
-      font-weight: normal;
-    }
-
-    .role-selector input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .checkmark {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 20px;
-      width: 20px;
-      background-color: #f5f5f5;
-      border-radius: 50%;
-      border: 1px solid #ddd;
-      transition: all 0.3s;
-    }
-
-    .role-selector label:hover .checkmark {
-      background-color: #e8f5e9;
-    }
-
-    .role-selector input:checked ~ .checkmark {
-      background-color: #4caf50;
-      border-color: #4caf50;
-    }
-
-    .checkmark:after {
-      content: "";
-      position: absolute;
-      display: none;
-    }
-
-    .role-selector input:checked ~ .checkmark:after {
-      display: block;
-    }
-
-    .role-selector .checkmark:after {
-      top: 6px;
-      left: 6px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: white;
-    }
-
-    /* Button styling */
-    .btn {
+    button {
       width: 100%;
-      padding: 14px;
       background-color: #4caf50;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 1em;
       transition: all 0.3s;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      margin-top: 10px;
     }
 
-    .btn:hover {
+    button:hover {
       background-color: #3f805a;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    /* Footer links */
     .login-footer {
       text-align: center;
-      padding: 0 30px 25px;
-      font-size: 0.9rem;
+      margin-top: 20px;
+      font-size: 0.9em;
       color: #666;
     }
 
     .login-footer a {
       color: #4caf50;
-      text-decoration: none;
       font-weight: 600;
     }
 
-    .login-footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Message styling */
-    #message {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 0.9rem;
-      display: none;
-    }
-
-    .message-success {
-      background-color: #e8f5e9;
-      color: #2f5d3f;
-      border: 1px solid #c8e6c9;
-    }
-
-    .message-error {
-      background-color: #ffebee;
+    .error-message {
       color: #f44336;
-      border: 1px solid #ffcdd2;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 480px) {
-      .login-container {
-        width: 90%;
-        margin: 20px auto;
-      }
-      
-      .login-header {
-        padding: 25px 20px;
-      }
-      
-      .login-form {
-        padding: 25px 20px;
-      }
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .login-container {
-      animation: fadeIn 0.5s ease-out;
+      font-size: 0.9em;
+      margin-top: 5px;
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
     <div class="login-header">
-      <h2><i class="fas fa-leaf"></i> FarmScape </h2>
-      <p>Rooftop Farming Management System</p>
+      <h1><i class="fas fa-leaf"></i> FarmScape</h1>
+      <p>Rooftop farming management system</p>
     </div>
-
-    <form id="loginForm" class="login-form">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
-        <i class="fas fa-user input-icon"></i>
+    
+    <div class="login-content">
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Enter your username" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+          <div class="error-message" id="passwordError">Incorrect username or password</div>
+        </div>
+        
+        <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+      </form>
+      
+      <div class="login-footer">
+        Don't have an account? <a href="#">Sign up</a>
       </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
-        <i class="fas fa-lock input-icon"></i>
-      </div>
-
-      <div class="role-selector">
-        <label>
-          <input type="radio" name="role" value="farmer" required>
-          <span class="checkmark"></span>
-          Farmer
-        </label>
-        <label>
-          <input type="radio" name="role" value="consultant">
-          <span class="checkmark"></span>
-          Consultant
-        </label>
-        <label>
-          <input type="radio" name="role" value="admin">
-          <span class="checkmark"></span>
-          Administrator
-        </label>
-      </div>
-
-      <button type="submit" class="btn">
-        <i class="fas fa-sign-in-alt"></i> Login
-      </button>
-
-      <div id="message"></div>
-    </form>
-
-    <div class="login-footer">
-      <p>Don't have an account? <a href="#">Request access</a></p>
-      <p><a href="#">Forgot password?</a></p>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const loginForm = document.getElementById('loginForm');
-      const message = document.getElementById('message');
+      const passwordError = document.getElementById('passwordError');
       
       loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
-
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const role = document.querySelector('input[name="role"]:checked');
         
-        // Reset message
-        message.style.display = 'none';
+        // Get input values
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
         
-        // Validate inputs
-        if (!username || !password) {
-          showMessage('Please fill in all fields', 'error');
-          return;
-        }
-        
-        if (!role) {
-          showMessage('Please select your role', 'error');
-          return;
-        }
-        
-        // Simulate login process
-        showMessage(`Authenticating as ${role.value}...`, 'success');
-        
-        // In a real app, this would be an AJAX call to your backend
-        setTimeout(() => {
-          // Simple validation for demo purposes
-          if (password.length < 6) {
-            showMessage('Password must be at least 6 characters', 'error');
-            return;
-          }
+        // Simple validation (in a real app, you would check against a database)
+        if (username.trim() === '' || password.trim() === '') {
+          passwordError.style.display = 'block';
+          passwordError.textContent = 'Please enter both username and password';
+        } else {
+          // Hide error message if showing
+          passwordError.style.display = 'none';
           
-          showMessage(`Welcome back, ${username}! Redirecting...`, 'success');
+          // In a real app, you would send this to your server for authentication
+          console.log('Login attempt with:', { username, password });
           
-          // Redirect to appropriate dashboard based on role
-          setTimeout(() => {
-            switch(role.value) {
-              case 'farmer':
-                window.location.href = 'farmer-dashboard.html';
-                break;
-              case 'consultant':
-                window.location.href = 'consultant-dashboard.html';
-                break;
-              case 'admin':
-                window.location.href = 'admin-dashboard.html';
-                break;
-              default:
-                window.location.href = 'dashboard.html';
-            }
-          }, 1500);
-        }, 1000);
+          // Redirect to dashboard after successful login
+          window.location.href = 'dashboard.html'; // Change this to your actual dashboard page
+        }
       });
       
-      function showMessage(text, type) {
-        message.textContent = text;
-        message.className = '';
-        message.classList.add(type === 'error' ? 'message-error' : 'message-success');
-        message.style.display = 'block';
-      }
-      
-      // Add focus effects
-      const inputs = document.querySelectorAll('.form-control');
-      inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-          this.parentElement.querySelector('label').style.color = '#4caf50';
-        });
-        
-        input.addEventListener('blur', function() {
-          this.parentElement.querySelector('label').style.color = '#2f5d3f';
-        });
+      // Clear error when typing
+      document.getElementById('password').addEventListener('input', function() {
+        passwordError.style.display = 'none';
       });
     });
   </script>

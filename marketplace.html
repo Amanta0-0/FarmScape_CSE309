@@ -131,7 +131,7 @@
     /* Cards section */
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: 1fr; /* Single column to stack vertically */
       gap: 20px;
     }
 
@@ -288,10 +288,6 @@
       .cards {
         grid-template-columns: 1fr;
       }
-
-      .card[style*="grid-column: span 2"] {
-        grid-column: span 1 !important;
-      }
       
       .marketplace-items {
         grid-template-columns: 1fr;
@@ -305,15 +301,15 @@
       <h2><i class="fas fa-leaf"></i> FarmScape</h2>
       <nav>
         <ul>
-          <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-          <li><a href="#crop-management"><i class="fas fa-seedling"></i> Crop Management</a></li>
+          <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="crop-management.html"><i class="fas fa-seedling"></i> Crop Management</a></li>
           <li><a href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
-          <li><a href="#inventory"><i class="fas fa-boxes"></i> Inventory</a></li>
-          <li><a href="#weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a class="active" href="#marketplace"><i class="fas fa-store"></i> Marketplace</a></li>
-          <li><a href="#expert"><i class="fas fa-user-tie"></i> Expert Help</a></li>
-          <li><a href="#analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
-          <li><a href="#community"><i class="fas fa-users"></i> Community</a></li>
+          <li><a href="inventory.html"><i class="fas fa-boxes"></i> Inventory</a></li>
+          <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+          <li><a class="active" href="marketplace.html"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
+          <li><a href="expert-help.html"><i class="fas fa-headset"></i> Expert Help</a></li>
+          <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+          <li><a href="community.html"><i class="fas fa-users"></i> Community</a></li>
         </ul>
       </nav>
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
@@ -338,7 +334,7 @@
         </header>
 
         <div class="cards">
-          <div class="card" style="grid-column: span 2;">
+          <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3><i class="fas fa-store"></i> Local Marketplace</h3>
               <div style="display: flex; gap: 10px;">
@@ -357,7 +353,7 @@
             <div class="marketplace-items">
               <div class="marketplace-item">
                 <div style="position: relative;">
-                  <img src="https://images.unsplash.com/photo-1594282418426-62d45d1ea2d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Organic Tomatoes">
+                  <img src="https://images.unsplash.com/photo-1594282418426-62d45d1ea2d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Organic Tomatoes">
                   <div style="position: absolute; top: 10px; left: 10px; background-color: rgba(255,255,255,0.9); padding: 3px 8px; border-radius: 12px; font-size: 0.8em; display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-star" style="color: #ffc107;"></i>
                     <span>4.8 (24)</span>
@@ -379,7 +375,7 @@
               
               <div class="marketplace-item">
                 <div style="position: relative;">
-                  <img src="https://images.unsplash.com/photo-1594282486551-8d5e8a61dc8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Heirloom Seeds">
+                  <img src="https://images.unsplash.com/photo-1594282486551-8d5e8a61dc8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Heirloom Seeds">
                   <div style="position: absolute; top: 10px; left: 10px; background-color: rgba(255,255,255,0.9); padding: 3px 8px; border-radius: 12px; font-size: 0.8em; display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-star" style="color: #ffc107;"></i>
                     <span>4.9 (36)</span>
@@ -401,7 +397,7 @@
               
               <div class="marketplace-item">
                 <div style="position: relative;">
-                  <img src="https://images.unsplash.com/photo-1590698933947-a202b069a861?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Vertical Planter">
+                  <img src="https://images.unsplash.com/photo-1590698933947-a202b069a861?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Vertical Planter">
                   <div style="position: absolute; top: 10px; left: 10px; background-color: rgba(255,255,255,0.9); padding: 3px 8px; border-radius: 12px; font-size: 0.8em; display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-star" style="color: #ffc107;"></i>
                     <span>4.7 (18)</span>
@@ -429,7 +425,7 @@
               
               <div class="marketplace-item">
                 <div style="position: relative;">
-                  <img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Fresh Basil">
+                  <img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Fresh Basil">
                   <div style="position: absolute; top: 10px; left: 10px; background-color: rgba(255,255,255,0.9); padding: 3px 8px; border-radius: 12px; font-size: 0.8em; display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-star" style="color: #ffc107;"></i>
                     <span>4.5 (12)</span>
@@ -450,132 +446,57 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="cards" style="margin-top: 30px;">
-          <div class="card" style="grid-column: span 2;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h3><i class="fas fa-shopping-cart"></i> Your Cart (3 items)</h3>
-              <button class="secondary"><i class="fas fa-trash"></i> Clear Cart</button>
-            </div>
+          <div class="card" style="max-height: 520px; overflow-y: auto;">
+            <h3><i class="fas fa-shopping-cart"></i> Your Cart (3 items)</h3>
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
+                  <th>Product</th>
+                  <th>Qty</th>
                   <th>Price</th>
-                  <th>Quantity</th>
                   <th>Total</th>
-                  <th>Actions</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <img src="https://via.placeholder.com/40x40?text=Tomato" alt="Tomatoes" style="width: 40px; height: 40px; border-radius: 4px;">
-                      <span>Organic Tomatoes (2 lbs)</span>
-                    </div>
-                  </td>
-                  <td>$3.50/lb</td>
-                  <td>
-                    <select style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
-                      <option>1</option>
-                      <option selected>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                    </select>
-                  </td>
+                  <td>Organic Tomatoes</td>
+                  <td>2 lbs</td>
+                  <td>$3.50</td>
                   <td>$7.00</td>
-                  <td>
-                    <button class="small-btn secondary"><i class="fas fa-trash"></i></button>
-                  </td>
+                  <td><button class="small-btn secondary"><i class="fas fa-trash"></i></button></td>
                 </tr>
                 <tr>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <img src="https://via.placeholder.com/40x40?text=Seed" alt="Seeds" style="width: 40px; height: 40px; border-radius: 4px;">
-                      <span>Heirloom Tomato Seeds</span>
-                    </div>
-                  </td>
-                  <td>$4.99/pack</td>
-                  <td>
-                    <select style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
-                      <option selected>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                    </select>
-                  </td>
+                  <td>Heirloom Tomato Seeds</td>
+                  <td>1 pack</td>
                   <td>$4.99</td>
-                  <td>
-                    <button class="small-btn secondary"><i class="fas fa-trash"></i></button>
-                  </td>
+                  <td>$4.99</td>
+                  <td><button class="small-btn secondary"><i class="fas fa-trash"></i></button></td>
                 </tr>
                 <tr>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <img src="https://via.placeholder.com/40x40?text=Pest" alt="Pesticide" style="width: 40px; height: 40px; border-radius: 4px;">
-                      <span>Organic Pesticide</span>
-                    </div>
-                  </td>
-                  <td>$12.99/bottle</td>
-                  <td>
-                    <select style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
-                      <option selected>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                    </select>
-                  </td>
-                  <td>$12.99</td>
-                  <td>
-                    <button class="small-btn secondary"><i class="fas fa-trash"></i></button>
-                  </td>
+                  <td>Fresh Basil</td>
+                  <td>3 bunches</td>
+                  <td>$2.50</td>
+                  <td>$7.50</td>
+                  <td><button class="small-btn secondary"><i class="fas fa-trash"></i></button></td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="3" style="text-align: right; font-weight: bold;">Subtotal:</td>
-                  <td style="font-weight: bold;">$24.98</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td colspan="3" style="text-align: right; font-weight: bold;">Delivery:</td>
-                  <td style="font-weight: bold;">$3.99</td>
-                  <td></td>
-                </tr>
-                <tr>
                   <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
-                  <td style="font-weight: bold; color: #4caf50;">$28.97</td>
-                  <td></td>
+                  <td colspan="2" style="font-weight: bold;">$19.49</td>
                 </tr>
               </tfoot>
             </table>
-            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
-              <button><i class="fas fa-credit-card"></i> Proceed to Checkout</button>
+            <div style="margin-top: 20px; text-align: right;">
+              <button><i class="fas fa-credit-card"></i> Checkout</button>
             </div>
           </div>
+
         </div>
       </div>
     </main>
   </div>
-
-  <script>
-    // Simple page routing
-    document.addEventListener('DOMContentLoaded', function() {
-      // Set up navigation
-      document.querySelectorAll('.sidebar nav a').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const pageId = this.getAttribute('href').substring(1);
-          
-          // Update active link
-          document.querySelectorAll('.sidebar nav a').forEach(navLink => {
-            navLink.classList.remove('active');
-          });
-          this.classList.add('active');
-        });
-      });
-    });
-  </script>
 </body>
 </html>
