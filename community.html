@@ -2,56 +2,568 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FarmScape - Community Forum</title>
-  <link rel="stylesheet" href="community.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset and base styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f8f4;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Container layout */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 240px;
+      background-color: #2f5d3f;
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 1.8em;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 16px;
+    }
+
+    .sidebar nav ul li a {
+      color: white;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: #3f805a;
+      transform: translateX(5px);
+    }
+
+    .sidebar nav ul li a.active {
+      background-color: #4caf50;
+      font-weight: 600;
+    }
+
+    .sidebar nav ul li a i {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 40px;
+      background-color: #f5f8f4;
+      position: relative;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .main-header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #2f5d3f;
+    }
+
+    .main-header p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4caf50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Cards section */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-left: 8px solid #4caf50;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      color: #2f5d3f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Status indicators */
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-good {
+      background-color: #4caf50;
+    }
+
+    .status-warning {
+      background-color: #ffc107;
+    }
+
+    .status-critical {
+      background-color: #f44336;
+    }
+
+    /* Table styles inside cards */
+    table {
+      font-size: 0.95em;
+      color: #333;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      color: #2f5d3f;
+      font-weight: bold;
+      text-align: left;
+      padding: 12px 8px;
+      background-color: #e8f5e9;
+    }
+
+    td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #f9f9f9;
+    }
+
+    /* Form styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2f5d3f;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #4caf50;
+      outline: none;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      background-color: #3f805a;
+    }
+
+    button.secondary {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    button.secondary:hover {
+      background-color: #e0e0e0;
+    }
+
+    .small-btn {
+      padding: 6px 12px;
+      font-size: 0.9em;
+    }
+
+    /* Community forum */
+    .forum-topics {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .forum-topic {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s;
+    }
+
+    .forum-topic:hover {
+      background-color: #f9f9f9;
+    }
+
+    .forum-topic:last-child {
+      border-bottom: none;
+    }
+
+    .forum-topic h4 {
+      color: #2f5d3f;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .forum-topic-meta {
+      font-size: 0.8em;
+      color: #666;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .forum-topic-stats {
+      display: flex;
+      gap: 15px;
+      margin-top: 8px;
+      font-size: 0.9em;
+    }
+
+    .forum-topic-stats span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #666;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        text-align: center;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card[style*="grid-column: span 2"] {
+        grid-column: span 1 !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container">
     <aside class="sidebar">
-      <h2>🌿 FarmScape</h2>
+      <h2><i class="fas fa-leaf"></i> FarmScape</h2>
       <nav>
         <ul>
-          <li><a href="dashboard.html">Dashboard</a></li>
-          <li><a href="cropmanagement.html">Crop Management</a></li>
-          <li><a href="taskautomation.html">Task Management</a></li>
-          <li><a href="inventory.html">Inventory Management</a></li>
-          <li><a href="weather.html">Weather Insights</a></li>
-          <li><a href="marketplace.html">Marketplace</a></li>
-          <li><a href="expert.html">Expert Consultation</a></li>
-          <li><a href="analytics.html">Data Analytics & Reports</a></li>
-          <li><a class="active" href="community.html">Community Forum & Chat</a></li>
-          <li><a href="notification.html">Notifications</a></li>
+          <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="#crop-management"><i class="fas fa-seedling"></i> Crop Management</a></li>
+          <li><a href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
+          <li><a href="#inventory"><i class="fas fa-boxes"></i> Inventory</a></li>
+          <li><a href="#weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+          <li><a href="#marketplace"><i class="fas fa-store"></i> Marketplace</a></li>
+          <li><a href="#expert"><i class="fas fa-user-tie"></i> Expert Help</a></li>
+          <li><a href="#analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+          <li><a class="active" href="#community"><i class="fas fa-users"></i> Community</a></li>
         </ul>
       </nav>
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.8); font-size: 0.9em;">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Last sync: 2 min ago</span>
+        </div>
+      </div>
     </aside>
 
-    <main class="main-content">
-      <section class="header-section">
+    <main class="main">
+      <!-- Community Forum Content -->
+      <div id="community" class="page-content">
         <header class="main-header">
-          <h1>FarmScape Community Forum</h1>
-          <p>Ask questions, share experiences, and collaborate with fellow farmers.</p>
+          <div>
+            <h1>Community Forum</h1>
+            <p>Connect with other rooftop farmers</p>
+          </div>
+          <div class="user-profile">
+            <div class="user-avatar">JD</div>
+          </div>
         </header>
-      </section>
 
-      <section class="forum-input">
-        <textarea id="userInput" placeholder="Ask a question or share your experience..."></textarea>
-        <button id="outputButton">Post Question/Experience</button>
-      </section>
+        <div class="cards">
+          <div class="card" style="grid-column: span 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3><i class="fas fa-comments"></i> Popular Discussions</h3>
+              <button><i class="fas fa-plus"></i> New Topic</button>
+            </div>
+            
+            <div class="forum-topics">
+              <div class="forum-topic">
+                <h4><i class="fas fa-pin" style="color: #f44336;"></i> Best crops for windy rooftops?</h4>
+                <div class="forum-topic-meta">
+                  <span>Posted by UrbanFarmer23</span>
+                  <span>2 days ago</span>
+                  <span>in <a href="#" style="color: #2f5d3f;">Crop Selection</a></span>
+                </div>
+                <p>I'm setting up a new rooftop farm in a windy area. Any suggestions for crops that can handle the wind? Also looking for windbreak ideas that won't take up too much space.</p>
+                <div class="forum-topic-stats">
+                  <span><i class="fas fa-reply"></i> 14 replies</span>
+                  <span><i class="fas fa-eye"></i> 128 views</span>
+                  <span><i class="fas fa-heart" style="color: #f44336;"></i> 24 likes</span>
+                </div>
+              </div>
+              
+              <div class="forum-topic">
+                <h4>Organic pest control solutions that actually work</h4>
+                <div class="forum-topic-meta">
+                  <span>Posted by GreenThumb</span>
+                  <span>5 days ago</span>
+                  <span>in <a href="#" style="color: #2f5d3f;">Pest Management</a></span>
+                </div>
+                <p>Sharing my success with neem oil spray for aphids. What other organic solutions have worked for you? I'm particularly struggling with whiteflies on my tomatoes.</p>
+                <div class="forum-topic-stats">
+                  <span><i class="fas fa-reply"></i> 8 replies</span>
+                  <span><i class="fas fa-eye"></i> 95 views</span>
+                  <span><i class="fas fa-heart"></i> 12 likes</span>
+                </div>
+              </div>
+              
+              <div class="forum-topic">
+                <h4>Watering system recommendations for 200 sq ft garden</h4>
+                <div class="forum-topic-meta">
+                  <span>Posted by RooftopNewbie</span>
+                  <span>1 week ago</span>
+                  <span>in <a href="#" style="color: #2f5d3f;">Irrigation</a></span>
+                </div>
+                <p>Looking for advice on setting up an efficient watering system for my 200 sq ft rooftop garden. Currently hand-watering but it's becoming too time-consuming. Considering drip irrigation but worried about water pressure.</p>
+                <div class="forum-topic-stats">
+                  <span><i class="fas fa-reply"></i> 12 replies</span>
+                  <span><i class="fas fa-eye"></i> 156 views</span>
+                  <span><i class="fas fa-heart"></i> 18 likes</span>
+                </div>
+              </div>
+              
+              <div class="forum-topic">
+                <h4><i class="fas fa-calendar-check" style="color: #4caf50;"></i> June Harvest Swap - City Center</h4>
+                <div class="forum-topic-meta">
+                  <span>Posted by CommunityAdmin</span>
+                  <span>2 weeks ago</span>
+                  <span>in <a href="#" style="color: #2f5d3f;">Community Events</a></span>
+                </div>
+                <p>Organizing our monthly rooftop farmers harvest swap on June 25th at City Center Park (3-6PM). Bring your extra produce to trade! This month's theme: Heirloom varieties.</p>
+                <div class="forum-topic-stats">
+                  <span><i class="fas fa-reply"></i> 23 replies</span>
+                  <span><i class="fas fa-eye"></i> 210 views</span>
+                  <span><i class="fas fa-heart"></i> 42 likes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <section class="forum-output">
-        <p>View responses on the <a href="communityForum2.html" id="forumLink">Community Forum Output</a></p>
-      </section>
-
-      <button id="messageButton">Real-time Chat</button>
-      <div id="chatModal" class="chat-container" style="display: none;">
-        <div class="chat-box" id="chatBox"></div>
-        <input type="text" id="chatInput" placeholder="Type a message..." />
-        <button id="sendButton">Send</button>
+        <div class="cards" style="margin-top: 30px;">
+          <div class="card" style="grid-column: span 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3><i class="fas fa-users"></i> Community Chat</h3>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 0.9em; color: #666;">12 members online</span>
+                <button class="secondary"><i class="fas fa-user-plus"></i> Invite</button>
+              </div>
+            </div>
+            
+            <div style="border: 1px solid #ddd; border-radius: 8px; height: 400px; padding: 15px; margin-bottom: 15px; overflow-y: auto; background: white; display: flex; flex-direction: column;">
+              <div style="margin-bottom: 15px; display: flex; justify-content: center;">
+                <div style="background-color: #f5f5f5; padding: 5px 15px; border-radius: 12px; font-size: 0.8em; color: #666;">
+                  Today, June 15
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 15px; display: flex;">
+                <div style="margin-right: 10px;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">UF</div>
+                </div>
+                <div>
+                  <div style="font-weight: bold; color: #2f5d3f;">UrbanFarmer23 (10:15 AM):</div>
+                  <div style="background-color: #f5f5f5; padding: 10px 15px; border-radius: 0 12px 12px 12px; max-width: 70%;">
+                    Has anyone tried growing strawberries on their rooftop? I'm considering adding some to my setup.
+                  </div>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
+                <div style="text-align: right;">
+                  <div style="font-weight: bold; color: #2f5d3f;">You (10:18 AM):</div>
+                  <div style="background-color: #e8f5e9; padding: 10px 15px; border-radius: 12px 0 12px 12px; max-width: 70%; margin-left: auto;">
+                    I have! They do well in containers. Just make sure they get enough sun and protection from wind.
+                  </div>
+                </div>
+                <div style="margin-left: 10px;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #4caf50; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">JD</div>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 15px; display: flex;">
+                <div style="margin-right: 10px;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">GR</div>
+                </div>
+                <div>
+                  <div style="font-weight: bold; color: #2f5d3f;">GreenRoofGuru (10:22 AM):</div>
+                  <div style="background-color: #f5f5f5; padding: 10px 15px; border-radius: 0 12px 12px 12px; max-width: 70%;">
+                    Yes! They do well in containers. Make sure they get at least 6 hours of sun. I recommend everbearing varieties for continuous harvest.
+                  </div>
+                </div>
+              </div>
+              
+              <div style="margin-bottom: 15px; display: flex;">
+                <div style="margin-right: 10px;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">SV</div>
+                </div>
+                <div>
+                  <div style="font-weight: bold; color: #2f5d3f;">SkyVeggies (10:25 AM):</div>
+                  <div style="background-color: #f5f5f5; padding: 10px 15px; border-radius: 0 12px 12px 12px; max-width: 70%;">
+                    I've had success with everbearing varieties. They produce all season long. Also, use netting to protect from birds!
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <form id="chatForm" style="display: flex; gap: 10px;">
+              <div style="flex: 1; position: relative;">
+                <input type="text" id="chatMessage" placeholder="Type your message..." style="width: 100%; padding: 12px 15px; padding-right: 40px; border-radius: 20px; border: 1px solid #ddd;">
+                <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px;">
+                  <button type="button" style="background: none; border: none; color: #666; cursor: pointer;"><i class="fas fa-paperclip"></i></button>
+                  <button type="button" style="background: none; border: none; color: #666; cursor: pointer;"><i class="fas fa-camera"></i></button>
+                </div>
+              </div>
+              <button type="submit" style="border-radius: 50%; width: 50px; height: 50px; padding: 0;"><i class="fas fa-paper-plane"></i></button>
+            </form>
+          </div>
+        </div>
       </div>
     </main>
   </div>
 
-  <script src="community.js"></script>
+  <script>
+    // Simple page routing
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show community page by default
+      document.querySelector('.sidebar nav a[href="#community"]').classList.add('active');
+      
+      // Set up navigation
+      document.querySelectorAll('.sidebar nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const pageId = this.getAttribute('href').substring(1);
+          
+          // Update active link
+          document.querySelectorAll('.sidebar nav a').forEach(navLink => {
+            navLink.classList.remove('active');
+          });
+          this.classList.add('active');
+        });
+      });
+      
+      // Form submissions
+      document.getElementById('chatForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const messageInput = document.getElementById('chatMessage');
+        if (messageInput.value.trim()) {
+          // In a real app, this would send to a server
+          console.log('Message sent:', messageInput.value);
+          messageInput.value = '';
+        }
+      });
+    });
+  </script>
 </body>
 </html>

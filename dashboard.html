@@ -3,109 +3,639 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FarmScape Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css" />
+  <title>FarmScape - Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Dashboard CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f8f4;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: #2f5d3f;
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 1.8em;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 16px;
+    }
+
+    .sidebar nav ul li a {
+      color: white;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: #3f805a;
+      transform: translateX(5px);
+    }
+
+    .sidebar nav ul li a.active {
+      background-color: #4caf50;
+      font-weight: 600;
+    }
+
+    .sidebar nav ul li a i {
+      width: 20px;
+      text-align: center;
+    }
+
+    .main {
+      flex: 1;
+      padding: 40px;
+      background-color: #f5f8f4;
+      position: relative;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .main-header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #2f5d3f;
+    }
+
+    .main-header p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4caf50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-left: 8px solid #4caf50;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      color: #2f5d3f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card p {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-good {
+      background-color: #4caf50;
+    }
+
+    .status-warning {
+      background-color: #ffc107;
+    }
+
+    .status-critical {
+      background-color: #f44336;
+    }
+
+    .crop-health {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .health-bar {
+      flex: 1;
+      height: 10px;
+      background-color: #eee;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .health-progress {
+      height: 100%;
+      background-color: #4caf50;
+      border-radius: 5px;
+    }
+
+    .farm-map {
+      width: 100%;
+      height: 400px;
+      background-color: #e8f5e9;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 10px;
+      height: 100%;
+      padding: 15px;
+    }
+
+    .map-plot {
+      background-color: #c8e6c9;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .map-plot:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .map-plot.occupied {
+      background-color: #a5d6a7;
+    }
+
+    .map-plot.selected {
+      background-color: #81c784;
+      box-shadow: 0 0 0 2px #4caf50;
+    }
+
+    .plot-info {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 10;
+      display: none;
+      min-width: 150px;
+    }
+
+    .map-plot:hover .plot-info {
+      display: block;
+    }
+
+    .task-calendar {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .task-calendar th {
+      padding: 10px;
+      text-align: center;
+      background-color: #e8f5e9;
+    }
+
+    .task-calendar td {
+      height: 80px;
+      vertical-align: top;
+      padding: 5px;
+      border: 1px solid #ddd;
+    }
+
+    .task-calendar .current-day {
+      background-color: #f1f8e9;
+    }
+
+    .calendar-task {
+      font-size: 0.8em;
+      background-color: #c8e6c9;
+      padding: 2px 5px;
+      border-radius: 3px;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+      position: relative;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      background-color: #3f805a;
+    }
+
+    button.secondary {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    button.secondary:hover {
+      background-color: #e0e0e0;
+    }
+
+    .small-btn {
+      padding: 6px 12px;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        text-align: center;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card[style*="grid-column: span 2"] {
+        grid-column: span 1 !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container">
     <aside class="sidebar">
-      <h2>🌿 FarmScape</h2>
-      <nav>
-        <ul>
-          <li><a class="active" href="dashboard.html">Dashboard</a></li>
-          <li><a href="cropmanagement.html">Crop Management</a></li>
-          <li><a href="taskautomation.html">Task Management</a></li>
-          <li><a href="inventory.html">Inventory Management</a></li>
-          <li><a href="weather.html">Weather Insights</a></li>
-          <li><a href="marketplace.html">Marketplace</a></li>
-          <li><a href="expert.html">Expert Consultation</a></li>
-          <li><a href="analytics.html">Data Analytics & Reports</a></li>
-          <li><a href="community.html">Community Forum & Chat</a></li>
-          <li><a href="notification.html">Notifications</a></li>
-        </ul>
-      </nav>
+      <h2><i class="fas fa-leaf"></i> FarmScape</h2>
+  <nav>
+    <ul>
+      <li><a class="active" href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="#crop-management"><i class="fas fa-seedling"></i> Crop Management</a></li>
+      <li><a href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
+      <li><a href="#inventory"><i class="fas fa-boxes"></i> Inventory</a></li>
+      <li><a href="#weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+      <li><a href="#marketplace"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
+      <li><a href="#expert-help"><i class="fas fa-headset"></i> Expert Help</a></li>
+      <li><a href="#analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+      <li><a href="#community"><i class="fas fa-users"></i> Community</a></li>
+    </ul>
+  </nav>
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.8); font-size: 0.9em;">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Last sync: 2 min ago</span>
+        </div>
+      </div>
     </aside>
 
     <main class="main">
-      <header class="main-header">
-        <h1>Welcome to FarmScape</h1>
-        <p>Smart Rooftop Farm Monitoring Dashboard</p>
-      </header>
+      <div id="dashboard" class="page-content">
+        <header class="main-header">
+          <div>
+            <h1>Farm Overview</h1>
+            <p>Welcome back! Here's what's happening with your rooftop farm today.</p>
+          </div>
+          <div class="user-profile">
+            <div class="user-avatar">JD</div>
+            <div>
+              <div style="font-weight: 600;">John Doe</div>
+              <div style="font-size: 0.8em; color: #666;">Urban Farmer</div>
+            </div>
+          </div>
+        </header>
 
-      <section class="cards">
-        <div class="card">
-          <h3>🌱 Active Crops</h3>
-          <p id="cropsPlanted">0</p>
-        </div>
-        <div class="card">
-          <h3>📋 Tasks Pending</h3>
-          <p id="tasksPending">0</p>
-        </div>
-        <div class="card">
-          <h3>🚿 Water Usage</h3>
-          <p id="waterUsage">--</p>
-        </div>
-        <div class="card">
-          <h3>☁️ Weather Alert</h3>
-          <p id="weatherAlert">--</p>
-        </div>
-        <div class="card">
-          <h3>🧺 Inventory Status</h3>
-          <p id="inventoryStatus">--</p>
-        </div>
-        <div class="card">
-          <h3>📈 Data Analytics & Reports</h3>
-          <p id="reportSummary">Weekly trends available</p>
-        </div>
-        <div class="card">
-          <h3>🔄 Refresh Data</h3>
-          <p>
-            <button id="refreshDashboard" style="padding: 10px 15px; background: #4caf50; border: none; border-radius: 6px; color: white; cursor: pointer;">
-              Refresh Data
-            </button>
-          </p>
-        </div>
-      </section>
+        <section class="cards">
+          <div class="card">
+            <h3><i class="fas fa-seedling"></i> Active Crops</h3>
+            <p>12 <span style="font-size: 0.8em; color: #666;">/ 15 capacity</span></p>
+            <div class="health-bar">
+              <div class="health-progress" style="width: 80%;"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3><i class="fas fa-tasks"></i> Tasks</h3>
+            <p>5 <span style="font-size: 0.8em; color: #666;">pending</span></p>
+            <p style="font-size: 0.9em; margin-top: 5px;"><span class="status-indicator status-warning"></span> 2 overdue</p>
+          </div>
+          <div class="card">
+            <h3><i class="fas fa-tint"></i> Water Usage</h3>
+            <p>120L <span style="font-size: 0.8em; color: #666;">today</span></p>
+            <p style="font-size: 0.9em; margin-top: 5px;"><i class="fas fa-arrow-down" style="color: #4caf50;"></i> 15% less than yesterday</p>
+          </div>
+          <div class="card">
+            <h3><i class="fas fa-cloud-sun"></i> Weather</h3>
+            <p>28°C <span style="font-size: 0.8em; color: #666;">Sunny</span></p>
+            <p style="font-size: 0.9em; margin-top: 5px;"><i class="fas fa-bolt" style="color: #ffc107;"></i> UV: High</p>
+          </div>
+          <div class="card">
+            <h3><i class="fas fa-box-open"></i> Inventory</h3>
+            <p>3 <span style="font-size: 0.8em; color: #666;">items low</span></p>
+            <p style="font-size: 0.9em; margin-top: 5px;"><span class="status-indicator status-critical"></span> Pesticide critical</p>
+          </div>
+          <div class="card">
+            <h3><i class="fas fa-shopping-basket"></i> Marketplace</h3>
+            <p>2 <span style="font-size: 0.8em; color: #666;">new offers</span></p>
+            <p style="font-size: 0.9em; margin-top: 5px;"><i class="fas fa-arrow-up" style="color: #4caf50;"></i> Tomato demand +20%</p>
+          </div>
+        </section>
 
-      <section class="cards" style="margin-top: 30px;">
-        <div class="card" style="grid-column: span 2;">
-          <h3>🏆 Best Performing Crops</h3>
-          <ul id="topCropsList"></ul>
-        </div>
+        <section class="cards" style="margin-top: 30px;">
+          <div class="card" style="grid-column: span 2;">
+            <h3><i class="fas fa-map-marked-alt"></i> Farm Layout</h3>
+            <div class="farm-map">
+              <div class="map-grid">
+                <div class="map-plot occupied">
+                  <div class="plot-info">
+                    <strong>Tomatoes</strong>
+                    <div>Planted: May 15</div>
+                    <div>Health: 98%</div>
+                  </div>
+                  <i class="fas fa-seedling"></i>
+                </div>
+                <div class="map-plot occupied">
+                  <div class="plot-info">
+                    <strong>Lettuce</strong>
+                    <div>Planted: June 1</div>
+                    <div>Health: 95%</div>
+                  </div>
+                  <i class="fas fa-seedling"></i>
+                </div>
+                <div class="map-plot occupied">
+                  <div class="plot-info">
+                    <strong>Basil</strong>
+                    <div>Planted: June 10</div>
+                    <div>Health: 93%</div>
+                  </div>
+                  <i class="fas fa-seedling"></i>
+                </div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                
+                <div class="map-plot occupied">
+                  <div class="plot-info">
+                    <strong>Spinach</strong>
+                    <div>Planted: June 5</div>
+                    <div>Health: 88%</div>
+                  </div>
+                  <i class="fas fa-seedling"></i>
+                </div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+                <div class="map-plot"></div>
+              </div>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+              <div>
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #a5d6a7; border-radius: 2px; margin-right: 5px;"></span>
+                <span>Occupied</span>
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #c8e6c9; border-radius: 2px; margin: 0 5px 0 15px;"></span>
+                <span>Available</span>
+              </div>
+              <button class="secondary"><i class="fas fa-expand"></i> Full Layout</button>
+            </div>
+          </div>
 
-        <div class="card" style="grid-column: span 2;">
-          <h3>📅 Today's Task Summary</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Irrigation - Tomatoes</td>
-                <td>8:00 AM</td>
-                <td>✅ Done</td>
-              </tr>
-              <tr>
-                <td>Weeding - Lettuce beds</td>
-                <td>11:00 AM</td>
-                <td>🔄 Pending</td>
-              </tr>
-              <tr>
-                <td>Fertilizing - Spinach</td>
-                <td>3:00 PM</td>
-                <td>🔄 Pending</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+          <div class="card" style="grid-column: span 2;">
+            <h3><i class="fas fa-calendar-alt"></i> Task Calendar</h3>
+            <table class="task-calendar">
+              <thead>
+                <tr>
+                  <th>Sun</th>
+                  <th>Mon</th>
+                  <th>Tue</th>
+                  <th>Wed</th>
+                  <th>Thu</th>
+                  <th>Fri</th>
+                  <th>Sat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>5</td>
+                  <td>6</td>
+                  <td>7</td>
+                  <td>8</td>
+                  <td>9</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>11</td>
+                  <td>12</td>
+                  <td>13</td>
+                  <td>14</td>
+                  <td class="current-day">15
+                    <span class="calendar-task">Water tomatoes</span>
+                    <span class="calendar-task">Harvest lettuce</span>
+                  </td>
+                  <td>16</td>
+                  <td>17</td>
+                </tr>
+                <tr>
+                  <td>18</td>
+                  <td>19</td>
+                  <td>20</td>
+                  <td>21</td>
+                  <td>22</td>
+                  <td>23</td>
+                  <td>24</td>
+                </tr>
+                <tr>
+                  <td>25</td>
+                  <td>26</td>
+                  <td>27</td>
+                  <td>28</td>
+                  <td>29</td>
+                  <td>30</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+              <button class="secondary"><i class="fas fa-plus"></i> Add Event</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="cards" style="margin-top: 30px;">
+          <div class="card" style="grid-column: span 2;">
+            <h3><i class="fas fa-chart-line"></i> Weekly Performance</h3>
+            <div class="chart-container">
+              <canvas id="performanceChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+              <div>
+                <span style="display: inline-flex; align-items: center; margin-right: 15px;">
+                  <span style="display: inline-block; width: 12px; height: 12px; background-color: #4caf50; border-radius: 2px; margin-right: 5px;"></span>
+                  <span>Tomatoes</span>
+                </span>
+                <span style="display: inline-flex; align-items: center; margin-right: 15px;">
+                  <span style="display: inline-block; width: 12px; height: 12px; background-color: #8bc34a; border-radius: 2px; margin-right: 5px;"></span>
+                  <span>Lettuce</span>
+                </span>
+                <span style="display: inline-flex; align-items: center;">
+                  <span style="display: inline-block; width: 12px; height: 12px; background-color: #cddc39; border-radius: 2px; margin-right: 5px;"></span>
+                  <span>Basil</span>
+                </span>
+              </div>
+              <div>
+                <select style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+                  <option>Last 7 Days</option>
+                  <option>Last 30 Days</option>
+                  <option>This Season</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 
-  <script src="dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize charts
+      initializeCharts();
+      
+      // Simulate data updates
+      simulateDataUpdates();
+    });
+
+    function initializeCharts() {
+      // Mock chart initialization
+      console.log('Charts initialized with mock data');
+      
+      const chartContainers = document.querySelectorAll('.chart-container');
+      chartContainers.forEach(container => {
+        container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Chart visualization would appear here with real data</div>';
+      });
+    }
+
+    function simulateDataUpdates() {
+      setInterval(() => {
+        const cropsPlanted = document.querySelector('.card:nth-child(1) p');
+        const tasksPending = document.querySelector('.card:nth-child(2) p');
+        
+        if (cropsPlanted && tasksPending) {
+          const currentCrops = parseInt(cropsPlanted.textContent) || 12;
+          const currentTasks = parseInt(tasksPending.textContent) || 5;
+          
+          cropsPlanted.textContent = currentCrops + (Math.random() > 0.7 ? 1 : 0);
+          tasksPending.textContent = currentTasks + (Math.random() > 0.7 ? -1 : (Math.random() > 0.9 ? 1 : 0));
+        }
+      }, 10000);
+    }
+  </script>
 </body>
 </html>

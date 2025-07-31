@@ -4,65 +4,534 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FarmScape - Data Analytics</title>
-  <link rel="stylesheet" href="analytics.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset and base styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f8f4;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Container layout */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 240px;
+      background-color: #2f5d3f;
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 1.8em;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 16px;
+    }
+
+    .sidebar nav ul li a {
+      color: white;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: #3f805a;
+      transform: translateX(5px);
+    }
+
+    .sidebar nav ul li a.active {
+      background-color: #4caf50;
+      font-weight: 600;
+    }
+
+    .sidebar nav ul li a i {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 40px;
+      background-color: #f5f8f4;
+      position: relative;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .main-header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #2f5d3f;
+    }
+
+    .main-header p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4caf50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Cards section */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-left: 8px solid #4caf50;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      color: #2f5d3f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card p {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* Status indicators */
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-good {
+      background-color: #4caf50;
+    }
+
+    .status-warning {
+      background-color: #ffc107;
+    }
+
+    .status-critical {
+      background-color: #f44336;
+    }
+
+    /* Chart container */
+    .chart-container {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+      position: relative;
+    }
+
+    /* Form styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2f5d3f;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #4caf50;
+      outline: none;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      background-color: #3f805a;
+    }
+
+    button.secondary {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    button.secondary:hover {
+      background-color: #e0e0e0;
+    }
+
+    .small-btn {
+      padding: 6px 12px;
+      font-size: 0.9em;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        text-align: center;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card[style*="grid-column: span 2"] {
+        grid-column: span 1 !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container">
     <aside class="sidebar">
-      <h2>🌿 FarmScape</h2>
+      <h2><i class="fas fa-leaf"></i> FarmScape</h2>
       <nav>
         <ul>
-          <li><a href="dashboard.html">Dashboard</a></li>
-          <li><a href="cropmanagement.html">Crop Management</a></li>
-          <li><a href="taskautomation.html">Task Management</a></li>
-          <li><a href="inventory.html">Inventory Management</a></li>
-          <li><a href="weather.html">Weather Insights</a></li>
-          <li><a href="marketplace.html">Marketplace</a></li>
-          <li><a href="expert.html">Expert Consultation</a></li>
-          <li><a class="active" href="analytics.html">Data Analytics & Reports</a></li>
-          <li><a href="community.html">Community Forum & Chat</a></li>
-          <li><a href="notification.html">Notifications</a></li>
+          <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="#crop-management"><i class="fas fa-seedling"></i> Crop Management</a></li>
+          <li><a href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
+          <li><a href="#inventory"><i class="fas fa-boxes"></i> Inventory</a></li>
+          <li><a href="#weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+          <li><a href="#marketplace"><i class="fas fa-store"></i> Marketplace</a></li>
+          <li><a href="#expert"><i class="fas fa-user-tie"></i> Expert Help</a></li>
+          <li><a class="active" href="#analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+          <li><a href="#community"><i class="fas fa-users"></i> Community</a></li>
         </ul>
       </nav>
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.8); font-size: 0.9em;">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Last sync: 2 min ago</span>
+        </div>
+      </div>
     </aside>
 
-    <main class="main-content">
-      <header class="main-header">
-        <h1>Data Analytics & Reports</h1>
-        <p>Analyze and track your farm's performance with detailed reports</p>
-      </header>
+    <main class="main">
+      <!-- Data Analytics Content -->
+      <div id="analytics" class="page-content">
+        <header class="main-header">
+          <div>
+            <h1>Data Analytics</h1>
+            <p>Visualize your farm's performance and trends</p>
+          </div>
+          <div class="user-profile">
+            <div class="user-avatar">JD</div>
+          </div>
+        </header>
 
-      <section class="form-container">
-        <h2>Enter Farm Data</h2>
-        <form id="farmForm">
-          <label for="cropName">Crop Name:</label>
-          <input type="text" id="cropName" name="cropName" required />
-
-          <label for="plantingDate">Planting Date:</label>
-          <input type="date" id="plantingDate" name="plantingDate" required />
-
-          <label for="yield">Yield (kg):</label>
-          <input type="number" id="yield" name="yield" required />
-
-          <label for="health">Health (%):</label>
-          <input type="number" id="health" name="health" required />
-
-          <button type="submit">Submit</button>
-        </form>
-      </section>
-
-      <section id="chartSection">
-        <div class="chart-container">
-          <canvas id="barChart"></canvas>
+        <div class="cards">
+          <div class="card" style="grid-column: span 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3><i class="fas fa-chart-line"></i> Crop Performance</h3>
+              <div style="display: flex; gap: 10px;">
+                <select style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+                  <option>Last 7 Days</option>
+                  <option>Last 30 Days</option>
+                  <option selected>This Season</option>
+                  <option>Custom Range</option>
+                </select>
+                <button class="secondary"><i class="fas fa-download"></i> Export</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="cropPerformanceChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px;">
+              <span style="display: inline-flex; align-items: center;">
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #4caf50; border-radius: 2px; margin-right: 5px;"></span>
+                <span>Tomatoes</span>
+              </span>
+              <span style="display: inline-flex; align-items: center;">
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #8bc34a; border-radius: 2px; margin-right: 5px;"></span>
+                <span>Lettuce</span>
+              </span>
+              <span style="display: inline-flex; align-items: center;">
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #cddc39; border-radius: 2px; margin-right: 5px;"></span>
+                <span>Basil</span>
+              </span>
+              <span style="display: inline-flex; align-items: center;">
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #ffc107; border-radius: 2px; margin-right: 5px;"></span>
+                <span>Spinach</span>
+              </span>
+            </div>
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas id="healthPieChart"></canvas>
+
+        <div class="cards" style="margin-top: 30px;">
+          <div class="card">
+            <h3><i class="fas fa-tint"></i> Water Usage</h3>
+            <div class="chart-container">
+              <canvas id="waterUsageChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+              <div>
+                <div style="font-size: 0.9em; color: #666;">Total This Month</div>
+                <div style="font-size: 1.2em; font-weight: bold;">1,240L</div>
+              </div>
+              <div>
+                <div style="font-size: 0.9em; color: #666;">vs Last Month</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #4caf50;">↓ 12%</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3><i class="fas fa-check-circle"></i> Task Completion</h3>
+            <div class="chart-container">
+              <canvas id="taskCompletionChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+              <div>
+                <div style="font-size: 0.9em; color: #666;">Completion Rate</div>
+                <div style="font-size: 1.2em; font-weight: bold;">87%</div>
+              </div>
+              <div>
+                <div style="font-size: 0.9em; color: #666;">vs Last Month</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #4caf50;">↑ 5%</div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+
+        <div class="cards" style="margin-top: 30px;">
+          <div class="card" style="grid-column: span 2;">
+            <h3><i class="fas fa-money-bill-wave"></i> Financial Overview</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Marketplace Sales</span>
+                  <span style="font-weight: bold;">$245.50</span>
+                </div>
+                <div style="height: 10px; background-color: #eee; border-radius: 5px; overflow: hidden;">
+                  <div style="height: 100%; width: 65%; background-color: #4caf50; border-radius: 5px;"></div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin: 15px 0 10px;">
+                  <span>Supply Costs</span>
+                  <span style="font-weight: bold;">$128.75</span>
+                </div>
+                <div style="height: 10px; background-color: #eee; border-radius: 5px; overflow: hidden;">
+                  <div style="height: 100%; width: 34%; background-color: #f44336; border-radius: 5px;"></div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin: 15px 0 10px;">
+                  <span>Net Profit</span>
+                  <span style="font-weight: bold; color: #4caf50;">$116.75</span>
+                </div>
+                <div style="height: 10px; background-color: #eee; border-radius: 5px; overflow: hidden;">
+                  <div style="height: 100%; width: 31%; background-color: #4caf50; border-radius: 5px;"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="chart-container">
+                  <canvas id="financialChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards" style="margin-top: 30px;">
+          <div class="card" style="grid-column: span 2;">
+            <h3><i class="fas fa-file-alt"></i> Generate Custom Report</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+              <div>
+                <div class="form-group">
+                  <label for="reportType">Report Type</label>
+                  <select id="reportType" style="width: 100%;">
+                    <option>Crop Performance</option>
+                    <option>Resource Usage</option>
+                    <option>Financial Summary</option>
+                    <option>Comprehensive</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="timePeriod">Time Period</label>
+                  <select id="timePeriod" style="width: 100%;">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option selected>This Season</option>
+                    <option>Custom Range</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="cropsIncluded">Crops to Include</label>
+                  <select id="cropsIncluded" multiple style="width: 100%; height: 100px;">
+                    <option selected>Tomatoes</option>
+                    <option selected>Lettuce</option>
+                    <option selected>Basil</option>
+                    <option selected>Spinach</option>
+                    <option>Peppers</option>
+                    <option>Herbs</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <div class="form-group">
+                  <label for="reportFormat">Format</label>
+                  <select id="reportFormat" style="width: 100%;">
+                    <option>PDF</option>
+                    <option>Excel</option>
+                    <option>CSV</option>
+                    <option>HTML</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="emailAddress">Email Address</label>
+                  <input type="email" id="emailAddress" placeholder="your@email.com" style="width: 100%;">
+                </div>
+                
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" style="margin-right: 8px;">
+                    Include recommendations
+                  </label>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                  <button><i class="fas fa-file-download"></i> Generate Report</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
-  <script src="analytics.js"></script>
+  <script>
+    // Simple page routing
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize charts (mock data)
+      initializeCharts();
+      
+      // Form submissions
+      setupFormHandlers();
+    });
+    
+    function initializeCharts() {
+      // Mock chart initialization
+      // In a real app, you would use a library like Chart.js
+      console.log('Charts initialized with mock data');
+      
+      // Simulate chart rendering
+      const chartContainers = document.querySelectorAll('.chart-container');
+      chartContainers.forEach(container => {
+        container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Chart visualization would appear here with real data</div>';
+      });
+    }
+    
+    function setupFormHandlers() {
+      // Report form
+      document.getElementById('reportForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Report generation started. You will receive it by email shortly.');
+        this.reset();
+      });
+    }
+  </script>
 </body>
 </html>
