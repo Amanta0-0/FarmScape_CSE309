@@ -582,23 +582,38 @@
     </main>
   </div>
 
-  <script>
-    // Simple page routing
-    document.addEventListener('DOMContentLoaded', function() {
-      // Set up navigation
-      document.querySelectorAll('.sidebar nav a').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const pageId = this.getAttribute('href').substring(1);
-          
-          // Update active link
-          document.querySelectorAll('.sidebar nav a').forEach(navLink => {
-            navLink.classList.remove('active');
-          });
-          this.classList.add('active');
-        });
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const navLinks = document.querySelectorAll('.sidebar nav a');
+    const pages = document.querySelectorAll('.page');
+
+    function showPage(pageId) {
+      // Show selected page, hide others
+      pages.forEach(page => {
+        page.style.display = (page.id === pageId) ? 'block' : 'none';
+      });
+
+      // Highlight the active link
+      navLinks.forEach(link => {
+        const linkPageId = link.getAttribute('href').substring(1);
+        link.classList.toggle('active', linkPageId === pageId);
+      });
+    }
+
+    // Setup event listeners
+    navLinks.forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const pageId = this.getAttribute('href').substring(1);
+        showPage(pageId);
       });
     });
-  </script>
+
+    // Show the first page by default
+    const firstPageId = navLinks[0].getAttribute('href').substring(1);
+    showPage(firstPageId);
+  });
+</script>
+
 </body>
 </html>
