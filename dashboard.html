@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FarmScape - Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* Dashboard CSS */
     * {
@@ -279,6 +280,8 @@
       vertical-align: top;
       padding: 5px;
       border: 1px solid #ddd;
+      position: relative;
+      cursor: pointer;
     }
 
     .task-calendar .current-day {
@@ -292,6 +295,11 @@
       border-radius: 3px;
       margin-bottom: 2px;
       display: block;
+      cursor: pointer;
+    }
+
+    .calendar-task:hover {
+      background-color: #a5d6a7;
     }
 
     .chart-container {
@@ -334,6 +342,163 @@
       font-size: 0.9em;
     }
 
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      color: #2f5d3f;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Full Layout Modal */
+    .full-layout-modal .modal-content {
+      max-width: 800px;
+      width: 95%;
+    }
+
+    .full-layout-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .layout-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .layout-controls button {
+      padding: 8px 15px;
+    }
+
+    .layout-controls button.active-filter {
+      background-color: #2f5d3f;
+      color: white;
+    }
+
+    .full-farm-map {
+      width: 100%;
+      height: 500px;
+      background-color: #e8f5e9;
+      border-radius: 8px;
+      overflow: auto;
+      padding: 15px;
+    }
+
+    .full-map-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      gap: 10px;
+      min-width: 700px;
+      min-height: 700px;
+      transition: transform 0.3s ease;
+    }
+
+    /* Plot Management Modal */
+    .plot-management-modal .modal-content {
+      max-width: 600px;
+    }
+
+    .plot-management-form {
+      margin-top: 20px;
+    }
+
+    .crop-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .crop-status {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .crop-history {
+      margin-top: 20px;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+
+    .history-item {
+      padding: 8px;
+      border-left: 3px solid #4caf50;
+      background-color: #f9f9f9;
+      margin-bottom: 8px;
+      border-radius: 0 4px 4px 0;
+    }
+
     @media (max-width: 768px) {
       .dashboard-container {
         flex-direction: column;
@@ -355,6 +520,22 @@
       .card[style*="grid-column: span 2"] {
         grid-column: span 1 !important;
       }
+      
+      .modal-content {
+        width: 95%;
+        padding: 15px;
+      }
+
+      .full-map-grid {
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        min-width: unset;
+        min-height: unset;
+      }
+
+      .layout-controls {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -369,7 +550,6 @@
           <li><a href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
           <li><a href="inventory.html"><i class="fas fa-boxes"></i> Inventory</a></li>
           <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="marketplace.html"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
           <li><a href="expert-help.html"><i class="fas fa-headset"></i> Expert Help</a></li>
           <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
           <li><a href="community.html"><i class="fas fa-users"></i> Community</a></li>
@@ -378,7 +558,7 @@
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
         <div style="display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.8); font-size: 0.9em;">
           <i class="fas fa-cloud-upload-alt"></i>
-          <span>Last sync: 2 min ago</span>
+          <span>Last sync: <span id="last-sync-time">2 min ago</span></span>
         </div>
       </div>
     </aside>
@@ -402,34 +582,34 @@
         <section class="cards">
           <div class="card">
             <h3><i class="fas fa-seedling"></i> Active Crops</h3>
-            <p>12 <span style="font-size: 0.8em; color: #666;">/ 15 capacity</span></p>
+            <p id="active-crops-count">12 <span style="font-size: 0.8em; color: #666;">/ 15 capacity</span></p>
             <div class="health-bar">
               <div class="health-progress" style="width: 80%;"></div>
             </div>
           </div>
           <div class="card">
             <h3><i class="fas fa-tasks"></i> Tasks</h3>
-            <p>5 <span style="font-size: 0.8em; color: #666;">pending</span></p>
-            <p style="font-size: 0.9em; margin-top: 5px;"><span class="status-indicator status-warning"></span> 2 overdue</p>
+            <p id="pending-tasks">5 <span style="font-size: 0.8em; color: #666;">pending</span></p>
+            <p style="font-size: 0.9em; margin-top: 5px;"><span class="status-indicator status-warning"></span> <span id="overdue-tasks">2</span> overdue</p>
           </div>
           <div class="card">
             <h3><i class="fas fa-tint"></i> Water Usage</h3>
-            <p>120L <span style="font-size: 0.8em; color: #666;">today</span></p>
+            <p id="water-usage">120L <span style="font-size: 0.8em; color: #666;">today</span></p>
             <p style="font-size: 0.9em; margin-top: 5px;"><i class="fas fa-arrow-down" style="color: #4caf50;"></i> 15% less than yesterday</p>
           </div>
           <div class="card">
             <h3><i class="fas fa-cloud-sun"></i> Weather</h3>
-            <p>28°C <span style="font-size: 0.8em; color: #666;">Sunny</span></p>
+            <p id="weather-temp">28°C <span style="font-size: 0.8em; color: #666;">Sunny</span></p>
             <p style="font-size: 0.9em; margin-top: 5px;"><i class="fas fa-bolt" style="color: #ffc107;"></i> UV: High</p>
           </div>
           <div class="card">
             <h3><i class="fas fa-box-open"></i> Inventory</h3>
-            <p>3 <span style="font-size: 0.8em; color: #666;">items low</span></p>
+            <p id="low-inventory">3 <span style="font-size: 0.8em; color: #666;">items low</span></p>
             <p style="font-size: 0.9em; margin-top: 5px;"><span class="status-indicator status-critical"></span> Pesticide critical</p>
           </div>
           <div class="card">
             <h3><i class="fas fa-shopping-basket"></i> Marketplace</h3>
-            <p>2 <span style="font-size: 0.8em; color: #666;">new offers</span></p>
+            <p id="marketplace-offers">2 <span style="font-size: 0.8em; color: #666;">new offers</span></p>
             <p style="font-size: 0.9em; margin-top: 5px;"><i class="fas fa-arrow-up" style="color: #4caf50;"></i> Tomato demand +20%</p>
           </div>
         </section>
@@ -438,52 +618,8 @@
           <div class="card" style="grid-column: span 2;">
             <h3><i class="fas fa-map-marked-alt"></i> Farm Layout</h3>
             <div class="farm-map">
-              <div class="map-grid">
-                <div class="map-plot occupied">
-                  <div class="plot-info">
-                    <strong>Tomatoes</strong>
-                    <div>Planted: May 15</div>
-                    <div>Health: 98%</div>
-                  </div>
-                  <i class="fas fa-seedling"></i>
-                </div>
-                <div class="map-plot occupied">
-                  <div class="plot-info">
-                    <strong>Lettuce</strong>
-                    <div>Planted: June 1</div>
-                    <div>Health: 95%</div>
-                  </div>
-                  <i class="fas fa-seedling"></i>
-                </div>
-                <div class="map-plot occupied">
-                  <div class="plot-info">
-                    <strong>Basil</strong>
-                    <div>Planted: June 10</div>
-                    <div>Health: 93%</div>
-                  </div>
-                  <i class="fas fa-seedling"></i>
-                </div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                
-                <div class="map-plot occupied">
-                  <div class="plot-info">
-                    <strong>Spinach</strong>
-                    <div>Planted: June 5</div>
-                    <div>Health: 88%</div>
-                  </div>
-                  <i class="fas fa-seedling"></i>
-                </div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
-                <div class="map-plot"></div>
+              <div class="map-grid" id="farm-grid">
+                <!-- Farm plots will be generated by JavaScript -->
               </div>
             </div>
             <div style="margin-top: 15px; display: flex; justify-content: space-between;">
@@ -493,13 +629,13 @@
                 <span style="display: inline-block; width: 12px; height: 12px; background-color: #c8e6c9; border-radius: 2px; margin: 0 5px 0 15px;"></span>
                 <span>Available</span>
               </div>
-              <button class="secondary"><i class="fas fa-expand"></i> Full Layout</button>
+              <button class="secondary" id="view-full-layout"><i class="fas fa-expand"></i> Full Layout</button>
             </div>
           </div>
 
           <div class="card" style="grid-column: span 2;">
             <h3><i class="fas fa-calendar-alt"></i> Task Calendar</h3>
-            <table class="task-calendar">
+            <table class="task-calendar" id="task-calendar">
               <thead>
                 <tr>
                   <th>Sun</th>
@@ -511,59 +647,12 @@
                   <th>Sat</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>3</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>5</td>
-                  <td>6</td>
-                  <td>7</td>
-                  <td>8</td>
-                  <td>9</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>11</td>
-                  <td>12</td>
-                  <td>13</td>
-                  <td>14</td>
-                  <td class="current-day">15
-                    <span class="calendar-task">Water tomatoes</span>
-                    <span class="calendar-task">Harvest lettuce</span>
-                  </td>
-                  <td>16</td>
-                  <td>17</td>
-                </tr>
-                <tr>
-                  <td>18</td>
-                  <td>19</td>
-                  <td>20</td>
-                  <td>21</td>
-                  <td>22</td>
-                  <td>23</td>
-                  <td>24</td>
-                </tr>
-                <tr>
-                  <td>25</td>
-                  <td>26</td>
-                  <td>27</td>
-                  <td>28</td>
-                  <td>29</td>
-                  <td>30</td>
-                  <td></td>
-                </tr>
+              <tbody id="calendar-body">
+                <!-- Calendar will be generated by JavaScript -->
               </tbody>
             </table>
             <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
-              <button class="secondary"><i class="fas fa-plus"></i> Add Event</button>
+              <button class="secondary" id="add-event-btn"><i class="fas fa-plus"></i> Add Event</button>
             </div>
           </div>
         </section>
@@ -590,7 +679,7 @@
                 </span>
               </div>
               <div>
-                <select style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+                <select id="chart-time-range" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
                   <option>Last 7 Days</option>
                   <option>Last 30 Days</option>
                   <option>This Season</option>
@@ -603,38 +692,871 @@
     </main>
   </div>
 
+  <!-- Add Event Modal -->
+  <div class="modal" id="event-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Event</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="form-group">
+        <label for="event-title">Event Title</label>
+        <input type="text" id="event-title" placeholder="Water tomatoes, Harvest lettuce, etc.">
+      </div>
+      <div class="form-group">
+        <label for="event-date">Date</label>
+        <input type="date" id="event-date">
+      </div>
+      <div class="form-group">
+        <label for="event-time">Time (optional)</label>
+        <input type="time" id="event-time">
+      </div>
+      <div class="form-group">
+        <label for="event-notes">Notes (optional)</label>
+        <textarea id="event-notes" placeholder="Add any additional details..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary" id="cancel-event">Cancel</button>
+        <button id="save-event">Save Event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plot Detail Modal -->
+  <div class="modal" id="plot-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="plot-modal-title">Plot Details</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div id="plot-details">
+        <!-- Plot details will be populated by JavaScript -->
+      </div>
+      <div class="modal-actions" id="plot-modal-actions">
+        <button class="secondary" id="close-plot-modal">Close</button>
+        <button id="manage-plot">Manage Plot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Layout Modal -->
+  <div class="modal full-layout-modal" id="full-layout-modal">
+    <div class="modal-content">
+      <div class="full-layout-header">
+        <h3>Complete Farm Layout</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="layout-controls">
+        <button class="secondary small-btn" id="zoom-in-btn"><i class="fas fa-search-plus"></i> Zoom In</button>
+        <button class="secondary small-btn" id="zoom-out-btn"><i class="fas fa-search-minus"></i> Zoom Out</button>
+        <button class="secondary small-btn" id="filter-occupied"><i class="fas fa-filter"></i> Show Occupied Only</button>
+        <button class="secondary small-btn" id="filter-available"><i class="fas fa-filter"></i> Show Available Only</button>
+        <button class="secondary small-btn" id="reset-view"><i class="fas fa-sync"></i> Reset View</button>
+      </div>
+      <div class="full-farm-map">
+        <div class="full-map-grid" id="full-farm-grid">
+          <!-- Full farm plots will be generated by JavaScript -->
+        </div>
+      </div>
+      <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="display: inline-block; width: 12px; height: 12px; background-color: #a5d6a7; border-radius: 2px; margin-right: 5px;"></span>
+          <span>Occupied</span>
+          <span style="display: inline-block; width: 12px; height: 12px; background-color: #c8e6c9; border-radius: 2px; margin: 0 5px 0 15px;"></span>
+          <span>Available</span>
+        </div>
+        <div>
+          <button class="secondary small-btn" id="print-layout"><i class="fas fa-print"></i> Print Layout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plot Management Modal -->
+  <div class="modal plot-management-modal" id="plot-management-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="plot-management-title">Manage Plot #<span id="plot-id"></span></h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div id="plot-management-content">
+        <!-- Plot management content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Data structures
+    const farmData = {
+      plots: [
+        { id: 1, crop: "Tomatoes", planted: "2023-05-15", health: 98, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Heirloom variety. Watch for aphids." },
+        { id: 2, crop: "Lettuce", planted: "2023-06-01", health: 95, occupied: true, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Butterhead lettuce. Ready for harvest soon." },
+        { id: 3, crop: "Basil", planted: "2023-06-10", health: 93, occupied: true, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Genovese basil. Pinch flowers to encourage growth." },
+        { id: 4, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for root vegetables" },
+        { id: 5, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ideal for tomatoes or peppers" },
+        { id: 6, crop: "Spinach", planted: "2023-06-05", health: 88, occupied: true, size: "2x4 ft", sunExposure: "Partial", waterNeeds: "High", notes: "Baby spinach. Harvest outer leaves first." },
+        { id: 7, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Well-draining soil" },
+        { id: 8, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Suitable for herbs" },
+        { id: 9, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good sun exposure" },
+        { id: 10, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Near water source" },
+        { id: 11, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "South-facing, maximum sun" },
+        { id: 12, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Protected from wind" },
+        { id: 13, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good for companion planting" },
+        { id: 14, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Recently fertilized" },
+        { id: 15, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Needs soil amendment" },
+        // Adding more plots to fill the 8x8 grid
+        { id: 16, crop: "Carrots", planted: "2023-06-01", health: 92, occupied: true, size: "2x4 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Rainbow variety" },
+        { id: 17, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ready for planting" },
+        { id: 18, crop: "Kale", planted: "2023-05-20", health: 96, occupied: true, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Curly kale" },
+        { id: 19, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good for herbs" },
+        { id: 20, crop: "Peppers", planted: "2023-05-25", health: 90, occupied: true, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Bell peppers" },
+        { id: 21, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Shaded area" },
+        { id: 22, crop: "Zucchini", planted: "2023-05-30", health: 94, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Needs plenty of space" },
+        { id: 23, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for lettuce" },
+        { id: 24, crop: "Cucumbers", planted: "2023-06-05", health: 89, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Trellis needed" },
+        { id: 25, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good sun exposure" },
+        { id: 26, crop: "Radishes", planted: "2023-06-10", health: 97, occupied: true, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Fast growing" },
+        { id: 27, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ready for planting" },
+        { id: 28, crop: "Green Beans", planted: "2023-06-03", health: 91, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Pole beans" },
+        { id: 29, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for herbs" },
+        { id: 30, crop: "Swiss Chard", planted: "2023-05-28", health: 95, occupied: true, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Rainbow chard" },
+        { id: 31, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "South-facing" },
+        { id: 32, crop: "Broccoli", planted: "2023-05-22", health: 87, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Watch for caterpillars" },
+        { id: 33, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for lettuce" },
+        { id: 34, crop: "Peas", planted: "2023-06-08", health: 93, occupied: true, size: "2x4 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Sugar snap peas" },
+        { id: 35, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ready for planting" },
+        { id: 36, crop: "Herbs Mix", planted: "2023-06-12", health: 96, occupied: true, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Low", notes: "Mint, oregano, thyme" },
+        { id: 37, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for herbs" },
+        { id: 38, crop: "Beets", planted: "2023-06-07", health: 90, occupied: true, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Red and golden beets" },
+        { id: 39, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good sun exposure" },
+        { id: 40, crop: "Onions", planted: "2023-05-18", health: 92, occupied: true, size: "2x4 ft", sunExposure: "Full", waterNeeds: "Low", notes: "Yellow onions" },
+        { id: 41, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for lettuce" },
+        { id: 42, crop: "Garlic", planted: "2023-05-10", health: 94, occupied: true, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Low", notes: "Hardneck variety" },
+        { id: 43, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ready for planting" },
+        { id: 44, crop: "Potatoes", planted: "2023-05-05", health: 88, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Russet potatoes" },
+        { id: 45, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for herbs" },
+        { id: 46, crop: "Pumpkins", planted: "2023-05-28", health: 86, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Small sugar pumpkins" },
+        { id: 47, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good sun exposure" },
+        { id: 48, crop: "Corn", planted: "2023-06-02", health: 89, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Sweet corn" },
+        { id: 49, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for lettuce" },
+        { id: 50, crop: "Strawberries", planted: "2023-05-15", health: 95, occupied: true, size: "2x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Everbearing" },
+        { id: 51, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ready for planting" },
+        { id: 52, crop: "Blueberries", planted: "2023-04-20", health: 84, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "High", notes: "Acidic soil required" },
+        { id: 53, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for herbs" },
+        { id: 54, crop: "Raspberries", planted: "2023-04-25", health: 91, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Summer bearing" },
+        { id: 55, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good sun exposure" },
+        { id: 56, crop: "Blackberries", planted: "2023-04-30", health: 89, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Thornless variety" },
+        { id: 57, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for lettuce" },
+        { id: 58, crop: "Grapes", planted: "2023-04-15", health: 93, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Low", notes: "Table grapes" },
+        { id: 59, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Ready for planting" },
+        { id: 60, crop: "Asparagus", planted: "2023-03-10", health: 82, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Perennial" },
+        { id: 61, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Partial", waterNeeds: "Varies", notes: "Good for herbs" },
+        { id: 62, crop: "Rhubarb", planted: "2023-03-20", health: 90, occupied: true, size: "4x4 ft", sunExposure: "Partial", waterNeeds: "Medium", notes: "Perennial" },
+        { id: 63, crop: null, planted: null, health: null, occupied: false, size: "2x2 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Good sun exposure" },
+        { id: 64, crop: "Artichokes", planted: "2023-03-25", health: 85, occupied: true, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Medium", notes: "Globe artichokes" }
+      ],
+      tasks: [
+        { id: 1, title: "Water tomatoes", date: "2023-06-15", completed: false },
+        { id: 2, title: "Harvest lettuce", date: "2023-06-15", completed: false },
+        { id: 3, title: "Check soil pH", date: "2023-06-16", completed: false },
+        { id: 4, title: "Apply fertilizer", date: "2023-06-18", completed: false },
+        { id: 5, title: "Prune tomato plants", date: "2023-06-12", completed: false, overdue: true },
+        { id: 6, title: "Order new seeds", date: "2023-06-10", completed: false, overdue: true }
+      ],
+      performance: {
+        tomatoes: [65, 69, 75, 80, 82, 85, 88],
+        lettuce: [50, 55, 60, 65, 70, 75, 78],
+        basil: [40, 45, 50, 55, 60, 65, 70]
+      },
+      cropOptions: ["Tomatoes", "Lettuce", "Basil", "Spinach", "Kale", "Peppers", "Carrots", "Radishes", "Cucumbers", "Zucchini", "Herbs Mix", "Green Beans", "Peas", "Swiss Chard", "Broccoli"]
+    };
+
+    let performanceChart = null;
+    let currentSelectedPlot = null;
+    let zoomLevel = 1;
+    let currentFilter = 'all'; // 'all', 'occupied', 'available'
+
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize charts
+      // Initialize all components
+      initializeFarmLayout();
+      initializeFullFarmLayout();
+      initializeCalendar();
       initializeCharts();
+      setupEventListeners();
       
       // Simulate data updates
       simulateDataUpdates();
     });
 
-    function initializeCharts() {
-      // Mock chart initialization
-      console.log('Charts initialized with mock data');
+    function initializeFarmLayout() {
+      const farmGrid = document.getElementById('farm-grid');
+      farmGrid.innerHTML = '';
       
-      const chartContainers = document.querySelectorAll('.chart-container');
-      chartContainers.forEach(container => {
-        container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Chart visualization would appear here with real data</div>';
+      // Show only first 15 plots in the dashboard view
+      const dashboardPlots = farmData.plots.slice(0, 15);
+      
+      dashboardPlots.forEach(plot => {
+        const plotElement = document.createElement('div');
+        plotElement.className = `map-plot ${plot.occupied ? 'occupied' : ''}`;
+        plotElement.dataset.id = plot.id;
+        
+        if (plot.occupied) {
+          plotElement.innerHTML = `
+            <div class="plot-info">
+              <strong>${plot.crop}</strong>
+              <div>Planted: ${formatDate(plot.planted)}</div>
+              <div>Health: ${plot.health}%</div>
+            </div>
+            <i class="fas fa-seedling"></i>
+          `;
+        }
+        
+        plotElement.addEventListener('click', () => showPlotDetails(plot));
+        farmGrid.appendChild(plotElement);
       });
     }
 
-    function simulateDataUpdates() {
-      setInterval(() => {
-        const cropsPlanted = document.querySelector('.card:nth-child(1) p');
-        const tasksPending = document.querySelector('.card:nth-child(2) p');
+    function initializeFullFarmLayout() {
+      const fullFarmGrid = document.getElementById('full-farm-grid');
+      fullFarmGrid.innerHTML = '';
+      
+      // Show all 64 plots in the full layout view
+      for (let i = 1; i <= 64; i++) {
+        const plot = farmData.plots.find(p => p.id === i) || 
+                   { id: i, crop: null, planted: null, health: null, occupied: false, size: "4x4 ft", sunExposure: "Full", waterNeeds: "Varies", notes: "Standard plot" };
         
-        if (cropsPlanted && tasksPending) {
-          const currentCrops = parseInt(cropsPlanted.textContent) || 12;
-          const currentTasks = parseInt(tasksPending.textContent) || 5;
-          
-          cropsPlanted.textContent = currentCrops + (Math.random() > 0.7 ? 1 : 0);
-          tasksPending.textContent = currentTasks + (Math.random() > 0.7 ? -1 : (Math.random() > 0.9 ? 1 : 0));
+        const plotElement = document.createElement('div');
+        plotElement.className = `map-plot ${plot.occupied ? 'occupied' : ''}`;
+        plotElement.dataset.id = plot.id;
+        plotElement.dataset.occupied = plot.occupied;
+        
+        if (plot.occupied) {
+          plotElement.innerHTML = `
+            <div class="plot-info">
+              <strong>${plot.crop}</strong>
+              <div>Planted: ${formatDate(plot.planted)}</div>
+              <div>Health: ${plot.health}%</div>
+            </div>
+            <i class="fas fa-seedling"></i>
+            <div style="font-size: 0.7em; margin-top: 5px;">#${plot.id}</div>
+          `;
+        } else {
+          plotElement.innerHTML = `<div style="font-size: 0.7em;">#${plot.id}</div>`;
         }
-      }, 10000);
+        
+        plotElement.addEventListener('click', () => {
+          currentSelectedPlot = plot;
+          showPlotDetails(plot);
+          document.getElementById('full-layout-modal').style.display = 'none';
+        });
+        
+        fullFarmGrid.appendChild(plotElement);
+      }
+    }
+
+    function initializeCalendar() {
+      const calendarBody = document.getElementById('calendar-body');
+      const today = new Date();
+      const currentDate = today.getDate();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      
+      // Get first day of month and number of days
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      
+      // Clear previous content
+      calendarBody.innerHTML = '';
+      
+      let date = 1;
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement('tr');
+        
+        for (let j = 0; j < 7; j++) {
+          const cell = document.createElement('td');
+          
+          if (i === 0 && j < firstDay) {
+            // Empty cells before the first day of the month
+            cell.textContent = '';
+          } else if (date > daysInMonth) {
+            // Empty cells after the last day of the month
+            break;
+          } else {
+            // Cells with dates
+            cell.textContent = date;
+            
+            // Highlight current day
+            if (date === currentDate) {
+              cell.classList.add('current-day');
+            }
+            
+            // Add tasks for this date if any
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+            const tasksForDate = farmData.tasks.filter(task => task.date === dateStr);
+            
+            tasksForDate.forEach(task => {
+              const taskElement = document.createElement('span');
+              taskElement.className = 'calendar-task';
+              taskElement.textContent = task.title;
+              taskElement.title = task.title;
+              taskElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                alert(`Task: ${task.title}\nDate: ${formatDate(task.date)}${task.completed ? '\nStatus: Completed' : '\nStatus: Pending'}`);
+              });
+              cell.appendChild(taskElement);
+            });
+            
+            date++;
+          }
+          
+          row.appendChild(cell);
+        }
+        
+        calendarBody.appendChild(row);
+      }
+    }
+
+    function initializeCharts() {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      
+      // Destroy previous chart instance if it exists
+      if (performanceChart) {
+        performanceChart.destroy();
+      }
+      
+      performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+          datasets: [
+            {
+              label: 'Tomatoes',
+              data: farmData.performance.tomatoes,
+              borderColor: '#4caf50',
+              backgroundColor: 'rgba(76, 175, 80, 0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Lettuce',
+              data: farmData.performance.lettuce,
+              borderColor: '#8bc34a',
+              backgroundColor: 'rgba(139, 195, 74, 0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Basil',
+              data: farmData.performance.basil,
+              borderColor: '#cddc39',
+              backgroundColor: 'rgba(205, 220, 57, 0.1)',
+              tension: 0.3,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+              min: 30,
+              title: {
+                display: true,
+                text: 'Growth Index'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          }
+        }
+      });
+    }
+
+    function setupEventListeners() {
+      // Event modal handlers
+      document.getElementById('add-event-btn').addEventListener('click', () => {
+        document.getElementById('event-modal').style.display = 'flex';
+      });
+      
+      document.querySelectorAll('.close-modal, #cancel-event, #close-plot-modal').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+          });
+        });
+      });
+      
+      document.getElementById('save-event').addEventListener('click', addNewEvent);
+      
+      // Chart time range selector
+      document.getElementById('chart-time-range').addEventListener('change', function() {
+        updateChartData(this.value);
+      });
+      
+      // View full layout button
+      document.getElementById('view-full-layout').addEventListener('click', showFullLayout);
+      
+      // Manage plot button
+      document.getElementById('manage-plot').addEventListener('click', managePlot);
+      
+      // Full layout modal controls
+      document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
+      document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+      document.getElementById('filter-occupied').addEventListener('click', () => filterPlots('occupied'));
+      document.getElementById('filter-available').addEventListener('click', () => filterPlots('available'));
+      document.getElementById('reset-view').addEventListener('click', resetView);
+      document.getElementById('print-layout').addEventListener('click', printLayout);
+      
+      // Close modals when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+          e.target.style.display = 'none';
+          resetView(); // Reset filters when closing modal
+        }
+      });
+    }
+
+    function showPlotDetails(plot) {
+      const plotModal = document.getElementById('plot-modal');
+      const plotDetails = document.getElementById('plot-details');
+      const plotTitle = document.getElementById('plot-modal-title');
+      
+      currentSelectedPlot = plot;
+      
+      if (plot.occupied) {
+        plotTitle.textContent = `Plot #${plot.id} - ${plot.crop}`;
+        plotDetails.innerHTML = `
+          <p><strong>Crop:</strong> ${plot.crop}</p>
+          <p><strong>Planted on:</strong> ${formatDate(plot.planted)}</p>
+          <p><strong>Health:</strong> ${plot.health}%</p>
+          <div class="health-bar" style="margin: 10px 0;">
+            <div class="health-progress" style="width: ${plot.health}%;"></div>
+          </div>
+          <p><strong>Days since planting:</strong> ${daysSince(plot.planted)}</p>
+          <p><strong>Size:</strong> ${plot.size}</p>
+          <p><strong>Sun Exposure:</strong> ${plot.sunExposure}</p>
+          <p><strong>Water Needs:</strong> ${plot.waterNeeds}</p>
+          ${plot.notes ? `<p><strong>Notes:</strong> ${plot.notes}</p>` : ''}
+        `;
+      } else {
+        plotTitle.textContent = `Plot #${plot.id} - Available`;
+        plotDetails.innerHTML = `
+          <p>This plot is currently available for planting.</p>
+          <p><strong>Size:</strong> ${plot.size}</p>
+          <p><strong>Sun Exposure:</strong> ${plot.sunExposure}</p>
+          <p><strong>Water Needs:</strong> ${plot.waterNeeds}</p>
+          ${plot.notes ? `<p><strong>Notes:</strong> ${plot.notes}</p>` : ''}
+          <p>Would you like to assign a crop to this plot?</p>
+        `;
+      }
+      
+      plotModal.style.display = 'flex';
+    }
+
+    function showFullLayout() {
+      const fullLayoutModal = document.getElementById('full-layout-modal');
+      fullLayoutModal.style.display = 'flex';
+      resetView();
+    }
+
+    function managePlot() {
+      if (!currentSelectedPlot) return;
+      
+      const plotManagementModal = document.getElementById('plot-management-modal');
+      const plotManagementTitle = document.getElementById('plot-management-title');
+      const plotManagementContent = document.getElementById('plot-management-content');
+      
+      plotManagementTitle.innerHTML = `Manage Plot #<span id="plot-id">${currentSelectedPlot.id}</span>`;
+      
+      if (currentSelectedPlot.occupied) {
+        plotManagementContent.innerHTML = `
+          <div class="plot-management-form">
+            <div class="form-group">
+              <label for="crop-type">Crop Type</label>
+              <select id="crop-type" disabled>
+                <option selected>${currentSelectedPlot.crop}</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="planting-date">Planting Date</label>
+              <input type="date" id="planting-date" value="${currentSelectedPlot.planted}" disabled>
+            </div>
+            
+            <div class="form-group">
+              <label for="crop-health">Crop Health (${currentSelectedPlot.health}%)</label>
+              <input type="range" id="crop-health" min="0" max="100" value="${currentSelectedPlot.health}" class="health-slider">
+              <div class="crop-status">
+                <span class="status-indicator ${getHealthStatus(currentSelectedPlot.health)}"></span>
+                <span id="health-status-text">${getHealthStatusText(currentSelectedPlot.health)}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="crop-notes">Notes</label>
+              <textarea id="crop-notes" placeholder="Add notes about this crop...">${currentSelectedPlot.notes || ''}</textarea>
+            </div>
+            
+            <div class="crop-history">
+              <h4>Crop History</h4>
+              <div class="history-item">
+                <strong>Planted</strong> - ${formatDate(currentSelectedPlot.planted)} - ${currentSelectedPlot.crop} added to plot
+              </div>
+              <div class="history-item">
+                <strong>Last watered</strong> - ${formatDate(new Date().toISOString().split('T')[0])} - 2 gallons applied
+              </div>
+              <div class="history-item">
+                <strong>Fertilized</strong> - ${formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])} - Organic compost added
+              </div>
+            </div>
+            
+            <div class="modal-actions">
+              <button class="secondary" id="cancel-management">Cancel</button>
+              <button id="update-notes">Update Notes</button>
+              <button class="secondary" id="harvest-crop"><i class="fas fa-sickle"></i> Harvest Crop</button>
+            </div>
+          </div>
+        `;
+      } else {
+        plotManagementContent.innerHTML = `
+          <div class="plot-management-form">
+            <p>This plot is available for planting. Select a crop to get started.</p>
+            
+            <div class="form-group">
+              <label for="new-crop-type">Crop Type</label>
+              <select id="new-crop-type">
+                <option value="">Select a crop...</option>
+                ${farmData.cropOptions.map(crop => `<option value="${crop}">${crop}</option>`).join('')}
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="new-planting-date">Planting Date</label>
+              <input type="date" id="new-planting-date" value="${new Date().toISOString().split('T')[0]}">
+            </div>
+            
+            <div class="form-group">
+              <label for="new-crop-notes">Initial Notes</label>
+              <textarea id="new-crop-notes" placeholder="Add any initial notes about this planting...">${currentSelectedPlot.notes || ''}</textarea>
+            </div>
+            
+            <div class="modal-actions">
+              <button class="secondary" id="cancel-planting">Cancel</button>
+              <button id="plant-crop"><i class="fas fa-seedling"></i> Plant Crop</button>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Add event listeners for the management modal
+      document.getElementById('cancel-management')?.addEventListener('click', () => {
+        document.getElementById('plot-management-modal').style.display = 'none';
+      });
+      
+      document.getElementById('cancel-planting')?.addEventListener('click', () => {
+        document.getElementById('plot-management-modal').style.display = 'none';
+      });
+      
+      document.getElementById('update-notes')?.addEventListener('click', updateCropNotes);
+      document.getElementById('harvest-crop')?.addEventListener('click', harvestCrop);
+      document.getElementById('plant-crop')?.addEventListener('click', plantCrop);
+      
+      document.getElementById('crop-health')?.addEventListener('input', function() {
+        document.getElementById('health-status-text').textContent = getHealthStatusText(this.value);
+      });
+      
+      // Close the plot details modal
+      document.getElementById('plot-modal').style.display = 'none';
+      
+      // Show the management modal
+      plotManagementModal.style.display = 'flex';
+    }
+
+    function updateCropNotes() {
+      const notes = document.getElementById('crop-notes').value;
+      const plotId = currentSelectedPlot.id;
+      const plotIndex = farmData.plots.findIndex(p => p.id === plotId);
+      
+      if (plotIndex !== -1) {
+        farmData.plots[plotIndex].notes = notes;
+        alert('Notes updated successfully!');
+        document.getElementById('plot-management-modal').style.display = 'none';
+      }
+    }
+
+    function harvestCrop() {
+      if (confirm(`Are you sure you want to harvest the ${currentSelectedPlot.crop} from Plot #${currentSelectedPlot.id}?`)) {
+        const plotId = currentSelectedPlot.id;
+        const plotIndex = farmData.plots.findIndex(p => p.id === plotId);
+        
+        if (plotIndex !== -1) {
+          farmData.plots[plotIndex].occupied = false;
+          farmData.plots[plotIndex].crop = null;
+          farmData.plots[plotIndex].planted = null;
+          farmData.plots[plotIndex].health = null;
+          
+          alert(`${currentSelectedPlot.crop} has been harvested from Plot #${plotId}.`);
+          document.getElementById('plot-management-modal').style.display = 'none';
+          
+          // Update the layout displays
+          initializeFarmLayout();
+          initializeFullFarmLayout();
+        }
+      }
+    }
+
+    function plantCrop() {
+      const cropType = document.getElementById('new-crop-type').value;
+      const plantingDate = document.getElementById('new-planting-date').value;
+      const notes = document.getElementById('new-crop-notes').value;
+      
+      if (!cropType) {
+        alert('Please select a crop type.');
+        return;
+      }
+      
+      const plotId = currentSelectedPlot.id;
+      const plotIndex = farmData.plots.findIndex(p => p.id === plotId);
+      
+      if (plotIndex !== -1) {
+        farmData.plots[plotIndex].occupied = true;
+        farmData.plots[plotIndex].crop = cropType;
+        farmData.plots[plotIndex].planted = plantingDate;
+        farmData.plots[plotIndex].health = 90; // Start with healthy plant
+        farmData.plots[plotIndex].notes = notes;
+        
+        alert(`${cropType} has been planted in Plot #${plotId}.`);
+        document.getElementById('plot-management-modal').style.display = 'none';
+        
+        // Update the layout displays
+        initializeFarmLayout();
+        initializeFullFarmLayout();
+        
+        // Add a task for initial watering
+        const newTask = {
+          id: farmData.tasks.length + 1,
+          title: `Water newly planted ${cropType}`,
+          date: new Date().toISOString().split('T')[0],
+          completed: false
+        };
+        
+        farmData.tasks.push(newTask);
+        initializeCalendar();
+        updateTaskCounts();
+      }
+    }
+
+    function zoomIn() {
+      if (zoomLevel < 1.5) {
+        zoomLevel += 0.1;
+        document.getElementById('full-farm-grid').style.transform = `scale(${zoomLevel})`;
+      }
+    }
+
+    function zoomOut() {
+      if (zoomLevel > 0.6) {
+        zoomLevel -= 0.1;
+        document.getElementById('full-farm-grid').style.transform = `scale(${zoomLevel})`;
+      }
+    }
+
+    function filterPlots(filterType) {
+      const plots = document.querySelectorAll('#full-farm-grid .map-plot');
+      const occupiedBtn = document.getElementById('filter-occupied');
+      const availableBtn = document.getElementById('filter-available');
+      
+      // Reset all button styles first
+      occupiedBtn.classList.remove('active-filter');
+      availableBtn.classList.remove('active-filter');
+      
+      // Apply the selected filter
+      if (filterType === currentFilter) {
+        // If clicking the same filter again, reset to all
+        resetView();
+        currentFilter = 'all';
+        return;
+      }
+      
+      currentFilter = filterType;
+      
+      plots.forEach(plot => {
+        const isOccupied = plot.classList.contains('occupied');
+        
+        if (filterType === 'occupied') {
+          plot.style.display = isOccupied ? 'flex' : 'none';
+          occupiedBtn.classList.add('active-filter');
+        } else if (filterType === 'available') {
+          plot.style.display = isOccupied ? 'none' : 'flex';
+          availableBtn.classList.add('active-filter');
+        }
+      });
+    }
+
+    function resetView() {
+      zoomLevel = 1;
+      document.getElementById('full-farm-grid').style.transform = 'scale(1)';
+      
+      const plots = document.querySelectorAll('#full-farm-grid .map-plot');
+      plots.forEach(plot => {
+        plot.style.display = 'flex';
+        plot.style.opacity = '1';
+      });
+      
+      // Reset button styles
+      document.getElementById('filter-occupied').classList.remove('active-filter');
+      document.getElementById('filter-available').classList.remove('active-filter');
+      
+      currentFilter = 'all';
+    }
+
+    function printLayout() {
+      alert('Printing layout... In a real application, this would generate a printable version of your farm layout.');
+      // In a real app, this would open a print dialog or generate a PDF
+    }
+
+    function addNewEvent() {
+      const title = document.getElementById('event-title').value;
+      const date = document.getElementById('event-date').value;
+      const time = document.getElementById('event-time').value;
+      const notes = document.getElementById('event-notes').value;
+      
+      if (!title || !date) {
+        alert('Please provide at least a title and date for the event.');
+        return;
+      }
+      
+      // Add to tasks data
+      const newTask = {
+          id: farmData.tasks.length + 1,
+          title: title,
+          date: date,
+          completed: false,
+          notes: notes
+      };
+      
+      farmData.tasks.push(newTask);
+      
+      // Reinitialize calendar to show the new task
+      initializeCalendar();
+      
+      // Update task counts
+      updateTaskCounts();
+      
+      // Close modal and reset form
+      document.getElementById('event-modal').style.display = 'none';
+      document.getElementById('event-title').value = '';
+      document.getElementById('event-date').value = '';
+      document.getElementById('event-time').value = '';
+      document.getElementById('event-notes').value = '';
+      
+      alert('Event added successfully!');
+    }
+
+    function updateChartData(timeRange) {
+      // This would fetch real data based on the selected time range
+      // For now, we'll just modify the mock data slightly
+      if (timeRange === 'Last 30 Days') {
+        performanceChart.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+        performanceChart.data.datasets[0].data = [60, 70, 80, 85];
+        performanceChart.data.datasets[1].data = [45, 60, 70, 75];
+        performanceChart.data.datasets[2].data = [35, 50, 60, 65];
+      } else if (timeRange === 'This Season') {
+        performanceChart.data.labels = ['Month 1', 'Month 2', 'Month 3'];
+        performanceChart.data.datasets[0].data = [50, 75, 90];
+        performanceChart.data.datasets[1].data = [40, 65, 80];
+        performanceChart.data.datasets[2].data = [30, 55, 70];
+      } else {
+        // Last 7 Days (default)
+        performanceChart.data.labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+        performanceChart.data.datasets[0].data = farmData.performance.tomatoes;
+        performanceChart.data.datasets[1].data = farmData.performance.lettuce;
+        performanceChart.data.datasets[2].data = farmData.performance.basil;
+      }
+      
+      performanceChart.update();
+    }
+
+    function updateTaskCounts() {
+      const pendingTasks = farmData.tasks.filter(task => !task.completed).length;
+      const overdueTasks = farmData.tasks.filter(task => 
+        !task.completed && new Date(task.date) < new Date()
+      ).length;
+      
+      document.getElementById('pending-tasks').innerHTML = `${pendingTasks} <span style="font-size: 0.8em; color: #666;">pending</span>`;
+      document.getElementById('overdue-tasks').textContent = overdueTasks;
+    }
+
+    function simulateDataUpdates() {
+      // Update sync time
+      setInterval(() => {
+        const minutes = Math.floor(Math.random() * 5) + 1;
+        document.getElementById('last-sync-time').textContent = `${minutes} min ago`;
+      }, 60000);
+      
+      // Random data fluctuations
+      setInterval(() => {
+        // Randomly update crop health
+        farmData.plots.forEach(plot => {
+          if (plot.occupied) {
+            const change = Math.random() > 0.5 ? 1 : -1;
+            plot.health = Math.min(100, Math.max(80, plot.health + change));
+          }
+        });
+        
+        // Random water usage changes
+        const waterUsageElement = document.getElementById('water-usage');
+        const currentWater = parseInt(waterUsageElement.textContent) || 120;
+        const newWater = Math.max(80, Math.min(160, currentWater + Math.floor(Math.random() * 10) - 4));
+        waterUsageElement.innerHTML = `${newWater}L <span style="font-size: 0.8em; color: #666;">today</span>`;
+        
+        // Random temperature changes
+        const weatherTempElement = document.getElementById('weather-temp');
+        const currentTemp = parseInt(weatherTempElement.textContent) || 28;
+        const newTemp = Math.max(25, Math.min(32, currentTemp + Math.floor(Math.random() * 3) - 1));
+        weatherTempElement.innerHTML = `${newTemp}°C <span style="font-size: 0.8em; color: #666;">Sunny</span>`;
+        
+        // Reinitialize farm layout to show updated health values
+        initializeFarmLayout();
+      }, 15000);
+    }
+
+    // Utility functions
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    function daysSince(dateString) {
+      if (!dateString) return 0;
+      
+      const plantedDate = new Date(dateString);
+      const today = new Date();
+      const diffTime = Math.abs(today - plantedDate);
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function getHealthStatus(health) {
+      if (health >= 90) return 'status-good';
+      if (health >= 70) return 'status-warning';
+      return 'status-critical';
+    }
+
+    function getHealthStatusText(health) {
+      if (health >= 90) return 'Excellent';
+      if (health >= 80) return 'Good';
+      if (health >= 70) return 'Needs Attention';
+      return 'Critical';
     }
   </script>
 </body>

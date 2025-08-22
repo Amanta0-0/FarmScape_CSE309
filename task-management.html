@@ -6,7 +6,6 @@
   <title>FarmScape - Task Management</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Reset and base styling */
     * {
       margin: 0;
       padding: 0;
@@ -24,13 +23,11 @@
       color: inherit;
     }
 
-    /* Container layout */
     .dashboard-container {
       display: flex;
       min-height: 100vh;
     }
 
-    /* Sidebar styling */
     .sidebar {
       width: 240px;
       background-color: #2f5d3f;
@@ -39,6 +36,7 @@
       box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
       position: relative;
       z-index: 10;
+      transition: all 0.3s ease;
     }
 
     .sidebar h2 {
@@ -84,12 +82,12 @@
       text-align: center;
     }
 
-    /* Main content */
     .main {
       flex: 1;
       padding: 40px;
       background-color: #f5f8f4;
       position: relative;
+      transition: all 0.3s ease;
     }
 
     .main-header {
@@ -114,6 +112,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      position: relative;
+      cursor: pointer;
     }
 
     .user-avatar {
@@ -128,7 +128,33 @@
       font-weight: bold;
     }
 
-    /* Cards section */
+    .user-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 180px;
+      display: none;
+      z-index: 20;
+    }
+
+    .user-dropdown.show {
+      display: block;
+    }
+
+    .user-dropdown a {
+      display: block;
+      padding: 12px 15px;
+      color: #333;
+      transition: all 0.2s;
+    }
+
+    .user-dropdown a:hover {
+      background-color: #f0f8f0;
+    }
+
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -166,7 +192,6 @@
       color: #333;
     }
 
-    /* Status indicators */
     .status-indicator {
       display: inline-block;
       width: 10px;
@@ -187,29 +212,148 @@
       background-color: #f44336;
     }
 
-    /* Table styles inside cards */
+    /* Enhanced task overview layout */
+    .task-overview-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      border-left: 8px solid #4caf50;
+      margin-bottom: 20px;
+    }
+
+    .task-overview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 20px 0 20px;
+      margin-bottom: 20px;
+    }
+
+    .task-overview-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2f5d3f;
+      font-size: 1.3em;
+      font-weight: 600;
+    }
+
+    .task-overview-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .task-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 0 20px 20px 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      background: #f8fdf8;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #4caf50;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #2f5d3f;
+        }
+
+    .stat-label {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .progress-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background-color: #e0e0e0;
+      border-radius: 6px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #66bb6a);
+      border-radius: 6px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    .table-container {
+      padding: 0 20px 20px 20px;
+      overflow-x: auto;
+    }
+
     table {
       font-size: 0.95em;
       color: #333;
       width: 100%;
       border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     th {
-      color: #2f5d3f;
-      font-weight: bold;
+      color: white;
+      font-weight: 600;
       text-align: left;
-      padding: 12px 8px;
-      background-color: #e8f5e9;
+      padding: 15px 12px;
+      background: linear-gradient(135deg, #2f5d3f, #4caf50);
+      position: relative;
     }
 
     td {
-      padding: 12px 8px;
-      border-bottom: 1px solid #ddd;
+      padding: 15px 12px;
+      border-bottom: 1px solid #e8f5e9;
+      transition: background-color 0.2s ease;
     }
 
-    tbody tr:nth-child(odd) {
-      background-color: #f9f9f9;
+    tbody tr:hover {
+      background-color: #f8fdf8;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #fafcfa;
     }
 
     button {
@@ -217,7 +361,7 @@
       color: white;
       border: none;
       padding: 12px 20px;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 1em;
       transition: all 0.3s;
@@ -225,63 +369,444 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      font-weight: 500;
     }
 
     button:hover {
       background-color: #3f805a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     button.secondary {
-      background-color: #f0f0f0;
-      color: #333;
+      background-color: #f0f8f0;
+      color: #2f5d3f;
+      border: 1px solid #e0e0e0;
     }
 
     button.secondary:hover {
-      background-color: #e0e0e0;
+      background-color: #e8f5e9;
+      border-color: #4caf50;
+    }
+
+    button.danger {
+      background-color: #f44336;
+    }
+
+    button.danger:hover {
+      background-color: #d32f2f;
+      box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
     }
 
     .small-btn {
-      padding: 6px 12px;
+      padding: 8px 12px;
       font-size: 0.9em;
+      min-width: auto;
+    }
+
+    .task-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .task-tag {
+      background-color: #e8f5e9;
+      color: #2f5d3f;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8em;
+    }
+
+    .priority-high {
+      color: #f44336;
+      font-weight: 600;
+    }
+
+    .priority-medium {
+      color: #ff9800;
+      font-weight: 600;
+    }
+
+    .priority-low {
+      color: #4caf50;
+      font-weight: 600;
+    }
+
+    /* Search and filter enhancements */
+    .controls-section {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      padding: 0 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-container input:focus {
+      border-color: #4caf50;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    .search-container i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4caf50;
+      font-size: 1.1em;
+    }
+
+    .filter-panel {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: 0 20px 20px 20px;
+      display: none;
+      border-left: 4px solid #4caf50;
+    }
+
+    .filter-panel.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .filter-option {
+      background: #f0f8f0;
+      padding: 10px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .filter-option:hover {
+      background: #e8f5e9;
+      transform: translateY(-2px);
+    }
+
+    .filter-option.active {
+      background: #4caf50;
+      color: white;
+      border-color: #2f5d3f;
+    }
+
+    /* Modal enhancements */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f8f0;
+    }
+
+    .modal-header h2 {
+      color: #2f5d3f;
+      font-size: 1.5em;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .close:hover {
+      color: #f44336;
+      background-color: #ffebee;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2f5d3f;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #4caf50;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px solid #f0f8f0;
+    }
+
+    /* Toast notification enhancements */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #4caf50, #66bb6a);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(76, 175, 80, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+      transform: translateX(400px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-weight: 500;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #f44336, #e53935);
+    }
+
+    .toast.warning {
+      background: linear-gradient(135deg, #ff9800, #fb8c00);
+    }
+
+    /* Completed task styling */
+    .completed {
+      opacity: 0.6;
+    }
+
+    .completed td:first-child {
+      text-decoration: line-through;
+    }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: linear-gradient(135deg, #2f5d3f, #4caf50);
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(47, 93, 63, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(47, 93, 63, 0.4);
     }
 
     /* Responsive design */
-    @media (max-width: 768px) {
-      .dashboard-container {
-        flex-direction: column;
-      }
-
+    @media (max-width: 1024px) {
       .sidebar {
-        width: 100%;
-        text-align: center;
+        transform: translateX(-100%);
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
       }
-
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
       .main {
+        width: 100%;
         padding: 20px;
       }
+      
+      .mobile-menu-btn {
+        display: flex;
+      }
+      
+      .task-overview-actions {
+        flex-direction: column;
+      }
+      
+      .controls-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
 
-      .cards {
+    @media (max-width: 768px) {
+      .main-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .task-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 20px;
+      }
+      
+      table {
+        font-size: 0.85em;
+      }
+      
+      th, td {
+        padding: 10px 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main {
+        padding: 15px;
+      }
+      
+      .task-stats {
         grid-template-columns: 1fr;
       }
-
-      .card[style*="grid-column: span 2"] {
-        grid-column: span 1 !important;
+      
+      .filter-options {
+        justify-content: center;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .toast {
+        right: 15px;
+        bottom: 15px;
+        left: 15px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="mobile-menu-btn" id="mobile-menu-btn">
+    <i class="fas fa-bars"></i>
+  </div>
+
   <div class="dashboard-container">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <h2><i class="fas fa-leaf"></i> FarmScape</h2>
       <nav>
         <ul>
           <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
           <li><a href="crop-management.html"><i class="fas fa-seedling"></i> Crop Management</a></li>
-          <li><a class="active" href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
+          <li><a class="active" href="task-management"> <i class="fas fa-tasks"></i> Task Management</a></li>
           <li><a href="inventory.html"><i class="fas fa-boxes"></i> Inventory</a></li>
           <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="marketplace.html"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
           <li><a href="expert-help.html"><i class="fas fa-headset"></i> Expert Help</a></li>
           <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
           <li><a href="community.html"><i class="fas fa-users"></i> Community</a></li>
@@ -296,151 +821,1582 @@
     </aside>
 
     <main class="main">
-      <!-- Task Management Content -->
-      <div id="task-management" class="page-content">
-        <header class="main-header">
-          <div>
-            <h1>Task Management</h1>
-            <p>Schedule and track farming activities</p>
+      <header class="main-header">
+        <div>
+          <h1>Task Management</h1>
+          <p>Schedule and track farming activities efficiently</p>
+        </div>
+        <div class="user-profile" id="user-profile-toggle">
+          <div class="user-avatar">JD</div>
+          <span>John Doe</span>
+          <i class="fas fa-chevron-down"></i>
+          <div class="user-dropdown" id="user-dropdown">
+            <a href="#profile"><i class="fas fa-user"></i> Profile</a>
+            <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+            <a href="#logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
           </div>
-          <div class="user-profile">
-            <div class="user-avatar">JD</div>
-          </div>
-        </header>
+        </div>
+      </header>
 
-        <div class="cards">
-          <div class="card" style="grid-column: span 2;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h3><i class="fas fa-tasks"></i> Today's Tasks</h3>
-              <div style="display: flex; gap: 10px;">
-                <button class="secondary"><i class="fas fa-filter"></i> Filter</button>
-                <button><i class="fas fa-plus"></i> Add Task</button>
-              </div>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Task</th>
-                  <th>Due</th>
-                  <th>Crop</th>
-                  <th>Priority</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Weeding - Lettuce beds</td>
-                  <td>Today, 11:00 AM</td>
-                  <td>Lettuce</td>
-                  <td><span class="status-indicator status-critical"></span> High</td>
-                  <td><span class="status-indicator status-warning"></span> Pending</td>
-                  <td>
-                    <button class="small-btn"><i class="fas fa-check"></i></button>
-                    <button class="small-btn"><i class="fas fa-edit"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Fertilizing - Spinach</td>
-                  <td>Today, 3:00 PM</td>
-                  <td>Spinach</td>
-                  <td><span class="status-indicator status-warning"></span> Medium</td>
-                  <td><span class="status-indicator status-warning"></span> Pending</td>
-                  <td>
-                    <button class="small-btn"><i class="fas fa-check"></i></button>
-                    <button class="small-btn"><i class="fas fa-edit"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Harvest - Tomatoes</td>
-                  <td>Tomorrow, 9:00 AM</td>
-                  <td>Tomatoes</td>
-                  <td><span class="status-indicator status-critical"></span> High</td>
-                  <td><span class="status-indicator status-good"></span> Scheduled</td>
-                  <td>
-                    <button class="small-btn"><i class="fas fa-edit"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Pest Control</td>
-                  <td>June 25, 2023</td>
-                  <td>All</td>
-                  <td><span class="status-indicator status-warning"></span> Medium</td>
-                  <td><span class="status-indicator status-good"></span> Scheduled</td>
-                  <td>
-                    <button class="small-btn"><i class="fas fa-edit"></i></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <!-- Enhanced Task Overview -->
+      <div class="task-overview-container">
+        <div class="task-overview-header">
+          <div class="task-overview-title">
+            <i class="fas fa-tasks"></i>
+            Task Overview
+          </div>
+          <div class="task-overview-actions">
+            <button class="secondary" id="filter-btn">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="secondary" id="calendar-view-btn">
+              <i class="fas fa-calendar"></i> Calendar
+            </button>
+            <button class="secondary" id="export-btn">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button id="add-task-btn">
+              <i class="fas fa-plus"></i> Add Task
+            </button>
           </div>
         </div>
 
-        <div class="cards" style="margin-top: 30px;">
-          <div class="card">
-            <h3><i class="fas fa-bell"></i> Task Alerts</h3>
-            <div style="margin-top: 15px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background-color: #fff8e1; border-radius: 6px; margin-bottom: 10px;">
-                <div>
-                  <div style="font-weight: 600;">Overdue: Watering - Tomatoes</div>
-                  <div style="font-size: 0.8em;">Was due yesterday at 8:00 AM</div>
-                </div>
-                <button class="small-btn"><i class="fas fa-check"></i> Complete</button>
+        <!-- Task Statistics -->
+        <div class="task-stats">
+          <div class="stat-item">
+            <div class="stat-number" id="total-tasks">20</div>
+            <div class="stat-label">Total Tasks</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="completed-tasks">13</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="pending-tasks">7</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="overdue-tasks">2</div>
+            <div class="stat-label">Overdue</div>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+          <div class="progress-info">
+            <span><strong id="completion-percentage">65%</strong> of tasks completed</span>
+            <span id="task-ratio">13/20 tasks</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 65%;"></div>
+          </div>
+        </div>
+
+        <!-- Search and Controls -->
+        <div class="controls-section">
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="task-search" placeholder="Search tasks by name, crop, or priority...">
+          </div>
+          <button class="secondary" id="clear-search-btn">
+            <i class="fas fa-times"></i> Clear
+            </button>
+          <button class="secondary" id="bulk-actions-btn">
+            <i class="fas fa-list"></i> Bulk Actions
+          </button>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel" id="filter-panel">
+          <h3><i class="fas fa-filter"></i> Filter Tasks</h3>
+          <div class="filter-options">
+            <div class="filter-option active" data-filter="all">All Tasks</div>
+            <div class="filter-option" data-filter="today">Today</div>
+            <div class="filter-option" data-filter="week">This Week</div>
+            <div class="filter-option" data-filter="high">High Priority</div>
+            <div class="filter-option" data-filter="overdue">Overdue</div>
+            <div class="filter-option" data-filter="completed">Completed</div>
+            <div class="filter-option" data-filter="lettuce">Lettuce</div>
+            <div class="filter-option" data-filter="tomatoes">Tomatoes</div>
+          </div>
+        </div>
+
+        <!-- Tasks Table -->
+        <div class="table-container">
+          <table id="tasks-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="select-all-tasks"></th>
+                <th>Task Name</th>
+                <th>Due Date</th>
+                <th>Crop</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="task-1" data-priority="high" data-due="today" data-crop="lettuce">
+                <td><input type="checkbox" class="task-checkbox"></td>
+                <td>
+                  <div>Weeding - Lettuce beds</div>
+                  <div class="task-tags">
+                    <span class="task-tag">Field A</span>
+                    <span class="task-tag">Manual</span>
+                  </div>
+                </td>
+                <td>Today, 11:00 AM</td>
+                <td>Lettuce</td>
+                <td><span class="priority-high"><i class="fas fa-exclamation-circle"></i> High</span></td>
+                <td><span class="status-indicator status-warning"></span> Pending</td>
+                <td>
+                  <button class="small-btn complete-btn" data-task-id="task-1" title="Mark Complete">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="small-btn edit-btn" data-task-id="task-1" title="Edit Task">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="small-btn view-btn" data-task-id="task-1" title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="small-btn danger delete-btn" data-task-id="task-1" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr id="task-2" data-priority="medium" data-due="today" data-crop="spinach">
+                <td><input type="checkbox" class="task-checkbox"></td>
+                <td>
+                  <div>Fertilizing - Spinach</div>
+                  <div class="task-tags">
+                    <span class="task-tag">Greenhouse B</span>
+                    <span class="task-tag">Organic</span>
+                  </div>
+                </td>
+                <td>Today, 3:00 PM</td>
+                <td>Spinach</td>
+                <td><span class="priority-medium"><i class="fas fa-exclamation-triangle"></i> Medium</span></td>
+                <td><span class="status-indicator status-warning"></span> Pending</td>
+                <td>
+                  <button class="small-btn complete-btn" data-task-id="task-2" title="Mark Complete">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="small-btn edit-btn" data-task-id="task-2" title="Edit Task">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="small-btn view-btn" data-task-id="task-2" title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="small-btn danger delete-btn" data-task-id="task-2" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr id="task-3" data-priority="high" data-due="tomorrow" data-crop="tomatoes">
+                <td><input type="checkbox" class="task-checkbox"></td>
+                <td>
+                  <div>Harvest - Tomatoes</div>
+                  <div class="task-tags">
+                    <span class="task-tag">Field C</span>
+                    <span class="task-tag">Peak Ripeness</span>
+                  </div>
+                </td>
+                <td>Tomorrow, 9:00 AM</td>
+                <td>Tomatoes</td>
+                <td><span class="priority-high"><i class="fas fa-exclamation-circle"></i> High</span></td>
+                <td><span class="status-indicator status-good"></span> Scheduled</td>
+                <td>
+                  <button class="small-btn complete-btn" data-task-id="task-3" title="Mark Complete">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="small-btn edit-btn" data-task-id="task-3" title="Edit Task">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="small-btn view-btn" data-task-id="task-3" title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="small-btn danger delete-btn" data-task-id="task-3" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr id="task-4" data-priority="medium" data-due="future" data-crop="all">
+                <td><input type="checkbox" class="task-checkbox"></td>
+                <td>
+                  <div>Pest Control Inspection</div>
+                  <div class="task-tags">
+                    <span class="task-tag">All Fields</span>
+                    <span class="task-tag">Monthly</span>
+                  </div>
+                </td>
+                <td>June 25, 2023</td>
+                <td>All Crops</td>
+                <td><span class="priority-medium"><i class="fas fa-exclamation-triangle"></i> Medium</span></td>
+                <td><span class="status-indicator status-good"></span> Scheduled</td>
+                <td>
+                  <button class="small-btn complete-btn" data-task-id="task-4" title="Mark Complete">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="small-btn edit-btn" data-task-id="task-4" title="Edit Task">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="small-btn view-btn" data-task-id="task-4" title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="small-btn danger delete-btn" data-task-id="task-4" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr id="task-5" data-priority="low" data-due="overdue" data-crop="tomatoes" class="completed">
+                <td><input type="checkbox" class="task-checkbox" checked disabled></td>
+                <td>
+                  <div>Watering - Tomatoes</div>
+                  <div class="task-tags">
+                    <span class="task-tag">Drip System</span>
+                    <span class="task-tag">Daily</span>
+                  </div>
+                </td>
+                <td>Yesterday, 8:00 AM</td>
+                <td>Tomatoes</td>
+                <td><span class="priority-low"><i class="fas fa-info-circle"></i> Low</span></td>
+                <td><span class="status-indicator status-good"></span> Completed</td>
+                <td>
+                  <button class="small-btn view-btn" data-task-id="task-5" title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="small-btn danger delete-btn" data-task-id="task-5" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 15px; color: #666;">
+                  Showing 5 of 20 tasks
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Task Management Cards -->
+      <div class="cards" style="margin-top: 30px;">
+        <div class="card">
+          <h3><i class="fas fa-bell"></i> Task Alerts</h3>
+          <div style="margin-top: 15px;">
+            <div id="overdue-alert" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background-color: #fff3e0; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #ff9800;">
+              <div>
+                <div style="font-weight: 600; color: #e65100;">Overdue: Equipment Maintenance</div>
+                <div style="font-size: 0.85em; color: #666;">Was due 2 days ago</div>
               </div>
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background-color: #e8f5e9; border-radius: 6px;">
-                <div>
-                  <div style="font-weight: 600;">Upcoming: Harvest - Lettuce</div>
-                  <div style="font-size: 0.8em;">Tomorrow at 9:00 AM</div>
-                </div>
-                <button class="small-btn"><i class="fas fa-eye"></i> View</button>
+              <div style="display: flex; gap: 8px;">
+                <button class="small-btn complete-alert-btn" data-alert-id="overdue-alert">
+                  <i class="fas fa-check"></i> Complete
+                </button>
+                <button class="small-btn secondary reschedule-alert-btn" data-alert-id="overdue-alert">
+                  <i class="fas fa-clock"></i> Reschedule
+                </button>
+              </div>
+            </div>
+            <div id="upcoming-alert" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background-color: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50;">
+              <div>
+                <div style="font-weight: 600; color: #2e7d32;">Upcoming: Harvest - Lettuce</div>
+                <div style="font-size: 0.85em; color: #666;">Tomorrow at 9:00 AM</div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="small-btn view-alert-btn" data-alert-id="upcoming-alert">
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <button class="small-btn secondary snooze-alert-btn" data-alert-id="upcoming-alert">
+                  <i class="fas fa-bell-slash"></i> Snooze
+                </button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="card">
-            <h3><i class="fas fa-robot"></i> AI Task Optimizer</h3>
-            <div style="margin-top: 15px;">
-              <p style="margin-bottom: 15px;">Based on your schedule and weather forecast, we suggest:</p>
-              
-              <div style="background-color: #f5f5f5; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                  <span style="font-weight: 600;">Move weeding to 2:00 PM</span>
-                  <span style="font-size: 0.8em; color: #666;">from 11:00 AM</span>
-                </div>
-                <div style="font-size: 0.9em;">Avoids peak sun exposure (UV 8) and aligns with your availability</div>
-                <div style="margin-top: 10px; display: flex; gap: 10px;">
-                  <button class="small-btn">Accept</button>
-                  <button class="small-btn secondary">Ignore</button>
-                </div>
+        <div class="card">
+          <h3><i class="fas fa-robot"></i> AI Task Optimizer</h3>
+          <div style="margin-top: 15px;">
+            <p style="margin-bottom: 15px; color: #666;">Based on weather forecast and crop conditions:</p>
+            
+            <div id="suggestion-1" style="background-color: #f8fdf8; border: 1px solid #e8f5e9; border-radius: 10px; padding: 15px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <span style="font-weight: 600; color: #2f5d3f;">Reschedule weeding to 2:00 PM</span>
+                <span style="font-size: 0.8em; color: #666; background: #fff; padding: 2px 8px; border-radius: 12px;">Save 2h</span>
               </div>
-              
-              <div style="background-color: #f5f5f5; border-radius: 8px; padding: 12px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                  <span style="font-weight: 600;">Batch fertilizer purchase</span>
-                </div>
-                <div style="font-size: 0.9em;">Save 15% by ordering fertilizer with pest control supplies</div>
-                <div style="margin-top: 10px; display: flex; gap: 10px;">
-                  <button class="small-btn">View Deal</button>
-                  <button class="small-btn secondary">Later</button>
-                </div>
+              <div style="font-size: 0.9em; color: #666; margin-bottom: 12px;">Avoid peak sun exposure (UV index: 9) and optimize your energy levels</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="small-btn accept-suggestion" data-suggestion-id="suggestion-1">
+                  <i class="fas fa-check"></i> Accept
+                </button>
+                <button class="small-btn secondary ignore-suggestion" data-suggestion-id="suggestion-1">
+                  <i class="fas fa-times"></i> Ignore
+                </button>
+                <button class="small-btn secondary details-suggestion" data-suggestion-id="suggestion-1">
+                  <i class="fas fa-info-circle"></i> Details
+                </button>
               </div>
             </div>
+            
+            <div id="suggestion-2" style="background-color: #f8fdf8; border: 1px solid #e8f5e9; border-radius: 10px; padding: 15px;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <span style="font-weight: 600; color: #2f5d3f;">Batch supply purchase</span>
+                <span style="font-size: 0.8em; color: #4caf50; background: #e8f5e9; padding: 2px 8px; border-radius: 12px;">Save 15%</span>
+              </div>
+              <div style="font-size: 0.9em; color: #666; margin-bottom: 12px;">Combine fertilizer and pest control orders for bulk discount</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="small-btn view-deal-btn" data-suggestion-id="suggestion-2">
+                  <i class="fas fa-shopping-cart"></i> View Deal
+                </button>
+                <button class="small-btn secondary ignore-suggestion" data-suggestion-id="suggestion-2">
+                  <i class="fas fa-clock"></i> Later
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3><i class="fas fa-chart-line"></i> Quick Stats</h3>
+          <div style="margin-top: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fdf8; border-radius: 8px; margin-bottom: 10px;">
+              <div>
+                <div style="font-size: 0.85em; color: #666;">This Week</div>
+                <div style="font-weight: 600;">12 tasks completed</div>
+              </div>
+              <div style="color: #4caf50; font-size: 1.2em;">
+                <i class="fas fa-arrow-up"></i> 20%
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fdf8; border-radius: 8px; margin-bottom: 15px;">
+              <div>
+                <div style="font-size: 0.85em; color: #666;">Average Time</div>
+                <div style="font-weight: 600;">2.3h per task</div>
+              </div>
+              <div style="color: #4caf50; font-size: 1.2em;">
+                <i class="fas fa-arrow-down"></i> 15%
+              </div>
+            </div>
+            <button class="secondary" id="view-analytics-btn" style="width: 100%;">
+              <i class="fas fa-chart-bar"></i> View Full Analytics
+            </button>
           </div>
         </div>
       </div>
     </main>
   </div>
 
+  <!-- Task Detail View -->
+  <div id="task-detail-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-tasks"></i> Task Details</h2>
+        <span class="close" id="close-detail-modal">&times;</span>
+      </div>
+      <div id="task-detail-content" style="max-height: 60vh; overflow-y: auto;">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+      <div class="form-actions">
+        <button type="button" class="secondary" id="close-detail-btn">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Task Modal -->
+  <div id="add-task-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-plus-circle"></i> Add New Task</h2>
+        <span class="close" id="close-add-modal">&times;</span>
+      </div>
+      <form id="task-form">
+        <div class="form-group">
+          <label for="task-name"><i class="fas fa-tasks"></i> Task Name</label>
+          <input type="text" id="task-name" required placeholder="Enter task name">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label for="due-date"><i class="fas fa-calendar"></i> Due Date</label>
+            <input type="datetime-local" id="due-date" required>
+          </div>
+          <div class="form-group">
+            <label for="crop"><i class="fas fa-seedling"></i> Crop</label>
+            <select id="crop" required>
+              <option value="">Select a crop</option>
+              <option value="Lettuce">Lettuce</option>
+              <option value="Spinach">Spinach</option>
+              <option value="Tomatoes">Tomatoes</option>
+              <option value="Carrots">Carrots</option>
+              <option value="All Crops">All Crops</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="priority"><i class="fas fa-flag"></i> Priority</label>
+          <select id="priority" required>
+            <option value="">Select priority</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="description"><i class="fas fa-align-left"></i> Description</label>
+          <textarea id="description" rows="3" placeholder="Add task description, notes, or requirements..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="tags"><i class="fas fa-tags"></i> Tags</label>
+          <input type="text" id="tags" placeholder="e.g., field-a, urgent, equipment-needed">
+          <small style="color: #666; font-size: 0.85em;">Separate tags with commas</small>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="secondary" id="cancel-task">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button type="submit">
+            <i class="fas fa-save"></i> Save Task
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div id="edit-task-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-edit"></i> Edit Task</h2>
+        <span class="close" id="close-edit-modal">&times;</span>
+      </div>
+      <form id="edit-task-form">
+        <input type="hidden" id="edit-task-id">
+        <div class="form-group">
+          <label for="edit-task-name"><i class="fas fa-tasks"></i> Task Name</label>
+          <input type="text" id="edit-task-name" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label for="edit-due-date"><i class="fas fa-calendar"></i> Due Date</label>
+            <input type="datetime-local" id="edit-due-date" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-crop"><i class="fas fa-seedling"></i> Crop</label>
+            <select id="edit-crop" required>
+              <option value="">Select a crop</option>
+              <option value="Lettuce">Lettuce</option>
+              <option value="Spinach">Spinach</option>
+              <option value="Tomatoes">Tomatoes</option>
+              <option value="Carrots">Carrots</option>
+              <option value="All Crops">All Crops</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="edit-priority"><i class="fas fa-flag"></i> Priority</label>
+          <select id="edit-priority" required>
+            <option value="">Select priority</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-description"><i class="fas fa-align-left"></i> Description</label>
+          <textarea id="edit-description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-tags"><i class="fas fa-tags"></i> Tags</label>
+          <input type="text" id="edit-tags">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="secondary" id="cancel-edit-task">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button type="submit">
+            <i class="fas fa-save"></i> Update Task
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Calendar Modal -->
+  <div id="calendar-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2><i class="fas fa-calendar"></i> Task Calendar</h2>
+        <span class="close" id="close-calendar-modal">&times;</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <button class="secondary" id="prev-month">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <h3 id="current-month">June 2023</h3>
+        <button class="secondary" id="next-month">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 20px; text-align: center;">
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Sun</div>
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Mon</div>
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Tue</div>
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Wed</div>
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Thu</div>
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Fri</div>
+        <div style="padding: 10px; font-weight: bold; background: #f0f8f0;">Sat</div>
+      </div>
+      <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 20px;">
+        <!-- Calendar days will be populated by JavaScript -->
+      </div>
+      <div id="calendar-tasks">
+        <h3>Tasks for <span id="selected-date">Today</span></h3>
+        <div id="date-tasks" style="margin-top: 15px;">
+          <!-- Tasks for selected date will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions Modal -->
+  <div id="bulk-actions-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-list"></i> Bulk Actions</h2>
+        <span class="close" id="close-bulk-modal">&times;</span>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <p id="selected-count">0 tasks selected</p>
+      </div>
+      <div style="display: grid; gap: 10px;">
+        <button id="bulk-complete-btn" class="bulk-action-btn" disabled>
+          <i class="fas fa-check-circle"></i> Mark as Complete
+        </button>
+        <button id="bulk-reschedule-btn" class="bulk-action-btn" disabled>
+          <i class="fas fa-calendar"></i> Reschedule
+        </button>
+        <button id="bulk-priority-btn" class="bulk-action-btn" disabled>
+          <i class="fas fa-flag"></i> Change Priority
+        </button>
+        <button id="bulk-delete-btn" class="bulk-action-btn danger" disabled>
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+      <div style="margin-top: 20px; text-align: center;">
+        <button class="secondary" id="cancel-bulk-actions">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmation-modal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2><i class="fas fa-exclamation-triangle"></i> Confirm Action</h2>
+        <span class="close" id="close-confirmation-modal">&times;</span>
+      </div>
+      <p id="confirmation-message">Are you sure you want to perform this action?</p>
+      <div class="form-actions">
+        <button class="secondary" id="cancel-confirmation">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+        <button class="danger" id="confirm-action">
+          <i class="fas fa-check"></i> Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="fas fa-check-circle" id="toast-icon"></i>
+    <span id="toast-message">Operation completed successfully!</span>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Set active link
-      document.querySelectorAll('.sidebar nav a').forEach(link => {
-        if (link.getAttribute('href') === '#task-management') {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
+      // Global variables
+      let currentEditTaskId = null;
+      let selectedTasks = new Set();
+      let currentConfirmAction = null;
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+
+      // DOM elements
+      const elements = {
+        mobileMenuBtn: document.getElementById('mobile-menu-btn'),
+        sidebar: document.getElementById('sidebar'),
+        userProfileToggle: document.getElementById('user-profile-toggle'),
+        userDropdown: document.getElementById('user-dropdown'),
+        
+        // Modals
+        addTaskModal: document.getElementById('add-task-modal'),
+        editTaskModal: document.getElementById('edit-task-modal'),
+        calendarModal: document.getElementById('calendar-modal'),
+        bulkActionsModal: document.getElementById('bulk-actions-modal'),
+        confirmationModal: document.getElementById('confirmation-modal'),
+        taskDetailModal: document.getElementById('task-detail-modal'),
+        
+        // Forms
+        taskForm: document.getElementById('task-form'),
+        editTaskForm: document.getElementById('edit-task-form'),
+        
+        // Buttons and controls
+        addTaskBtn: document.getElementById('add-task-btn'),
+        filterBtn: document.getElementById('filter-btn'),
+        calendarViewBtn: document.getElementById('calendar-view-btn'),
+        exportBtn: document.getElementById('export-btn'),
+        bulkActionsBtn: document.getElementById('bulk-actions-btn'),
+        clearSearchBtn: document.getElementById('clear-search-btn'),
+        
+        // Other elements
+        filterPanel: document.getElementById('filter-panel'),
+        taskSearch: document.getElementById('task-search'),
+        toast: document.getElementById('toast'),
+        toastMessage: document.getElementById('toast-message'),
+        toastIcon: document.getElementById('toast-icon'),
+        tasksTable: document.getElementById('tasks-table'),
+        selectAllTasks: document.getElementById('select-all-tasks')
+      };
+
+      // Initialize
+      initializeEventListeners();
+      updateTaskStats();
+      setCurrentDateTime();
+
+      function initializeEventListeners() {
+        // Mobile menu
+        elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        
+        // User profile dropdown
+        elements.userProfileToggle.addEventListener('click', toggleUserDropdown);
+        document.addEventListener('click', handleOutsideClick);
+        
+        // Modal controls
+        setupModalControls();
+        
+        // Task management
+        setupTaskControls();
+        
+        // Search and filters
+        setupSearchAndFilters();
+        
+        // Bulk actions
+        setupBulkActions();
+        
+        // Task alerts and suggestions
+        setupAlertsAndSuggestions();
+        
+        // Other buttons
+        setupOtherButtons();
+      }
+
+      function toggleMobileMenu() {
+        elements.sidebar.classList.toggle('active');
+      }
+
+      function toggleUserDropdown() {
+        elements.userDropdown.classList.toggle('show');
+      }
+
+      function handleOutsideClick(e) {
+        if (!elements.userProfileToggle.contains(e.target)) {
+          elements.userDropdown.classList.remove('show');
         }
-      });
+      }
+
+      function setupModalControls() {
+        // Add task modal
+        elements.addTaskBtn.addEventListener('click', () => openModal('addTaskModal'));
+        document.getElementById('close-add-modal').addEventListener('click', () => closeModal('addTaskModal'));
+        document.getElementById('cancel-task').addEventListener('click', () => closeModal('addTaskModal'));
+        
+        // Edit task modal
+        document.getElementById('close-edit-modal').addEventListener('click', () => closeModal('editTaskModal'));
+        document.getElementById('cancel-edit-task').addEventListener('click', () => closeModal('editTaskModal'));
+        
+        // Calendar modal
+        elements.calendarViewBtn.addEventListener('click', () => {
+          openModal('calendarModal');
+          renderCalendar();
+        });
+        document.getElementById('close-calendar-modal').addEventListener('click', () => closeModal('calendarModal'));
+        document.getElementById('prev-month').addEventListener('click', () => {
+          currentMonth--;
+          if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+          }
+          renderCalendar();
+        });
+        document.getElementById('next-month').addEventListener('click', () => {
+          currentMonth++;
+          if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+          }
+          renderCalendar();
+        });
+        
+        // Bulk actions modal
+        elements.bulkActionsBtn.addEventListener('click', () => openModal('bulkActionsModal'));
+        document.getElementById('close-bulk-modal').addEventListener('click', () => closeModal('bulkActionsModal'));
+        document.getElementById('cancel-bulk-actions').addEventListener('click', () => closeModal('bulkActionsModal'));
+        
+        // Confirmation modal
+        document.getElementById('close-confirmation-modal').addEventListener('click', () => closeModal('confirmationModal'));
+        document.getElementById('cancel-confirmation').addEventListener('click', () => closeModal('confirmationModal'));
+        
+        // Task detail modal
+        document.getElementById('close-detail-modal').addEventListener('click', () => closeModal('taskDetailModal'));
+        document.getElementById('close-detail-btn').addEventListener('click', () => closeModal('taskDetailModal'));
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (event) => {
+          Object.keys(elements).forEach(key => {
+            if (key.includes('Modal') && event.target === elements[key]) {
+              closeModal(key);
+            }
+          });
+        });
+        
+        // Form submissions
+        elements.taskForm.addEventListener('submit', handleAddTask);
+        elements.editTaskForm.addEventListener('submit', handleEditTask);
+      }
+
+      function setupTaskControls() {
+        // Task action buttons (delegated event handling)
+        elements.tasksTable.addEventListener('click', handleTaskAction);
+        
+        // Select all checkbox
+        elements.selectAllTasks.addEventListener('change', handleSelectAll);
+      }
+
+      function setupSearchAndFilters() {
+        elements.taskSearch.addEventListener('input', handleSearch);
+        elements.clearSearchBtn.addEventListener('click', clearSearch);
+        elements.filterBtn.addEventListener('click', toggleFilterPanel);
+        
+        // Filter options
+        document.querySelectorAll('.filter-option').forEach(option => {
+          option.addEventListener('click', handleFilterOption);
+        });
+      }
+
+      function setupBulkActions() {
+        document.getElementById('bulk-complete-btn').addEventListener('click', () => bulkAction('complete'));
+        document.getElementById('bulk-reschedule-btn').addEventListener('click', () => bulkAction('reschedule'));
+        document.getElementById('bulk-priority-btn').addEventListener('click', () => bulkAction('priority'));
+        document.getElementById('bulk-delete-btn').addEventListener('click', () => bulkAction('delete'));
+      }
+
+      function setupAlertsAndSuggestions() {
+        // Alert buttons
+        document.querySelectorAll('.complete-alert-btn').forEach(btn => {
+          btn.addEventListener('click', handleCompleteAlert);
+        });
+        
+        document.querySelectorAll('.reschedule-alert-btn').forEach(btn => {
+          btn.addEventListener('click', handleRescheduleAlert);
+        });
+        
+        document.querySelectorAll('.view-alert-btn').forEach(btn => {
+          btn.addEventListener('click', handleViewAlert);
+        });
+        
+        document.querySelectorAll('.snooze-alert-btn').forEach(btn => {
+          btn.addEventListener('click', handleSnoozeAlert);
+        });
+        
+        // Suggestion buttons
+        document.querySelectorAll('.accept-suggestion').forEach(btn => {
+          btn.addEventListener('click', handleAcceptSuggestion);
+        });
+        
+        document.querySelectorAll('.ignore-suggestion').forEach(btn => {
+          btn.addEventListener('click', handleIgnoreSuggestion);
+        });
+        
+        document.querySelectorAll('.details-suggestion').forEach(btn => {
+          btn.addEventListener('click', handleDetailsSuggestion);
+        });
+        
+        // Remove e-commerce functionality
+        document.querySelector('.view-deal-btn').addEventListener('click', handleViewDeal);
+      }
+
+      function setupOtherButtons() {
+        elements.exportBtn.addEventListener('click', handleExport);
+        document.getElementById('view-analytics-btn').addEventListener('click', handleViewAnalytics);
+        
+        // Confirmation action
+        document.getElementById('confirm-action').addEventListener('click', handleConfirmAction);
+      }
+
+      function openModal(modalKey) {
+        elements[modalKey].style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal(modalKey) {
+        elements[modalKey].style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset forms
+        if (modalKey === 'addTaskModal') {
+          elements.taskForm.reset();
+        } else if (modalKey === 'editTaskModal') {
+          elements.editTaskForm.reset();
+        }
+      }
+
+      function handleTaskAction(e) {
+        const target = e.target.closest('button');
+        if (!target) return;
+        
+        const taskId = target.getAttribute('data-task-id');
+        
+        if (target.classList.contains('complete-btn')) {
+          completeTask(taskId);
+        } else if (target.classList.contains('edit-btn')) {
+          editTask(taskId);
+        } else if (target.classList.contains('view-btn')) {
+          viewTask(taskId);
+        } else if (target.classList.contains('delete-btn')) {
+          deleteTask(taskId);
+        } else if (target.classList.contains('task-checkbox')) {
+          handleTaskSelection(taskId, target.checked);
+        }
+      }
+
+      function handleSelectAll(e) {
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        checkboxes.forEach(checkbox => {
+          if (!checkbox.disabled) {
+            checkbox.checked = e.target.checked;
+            handleTaskSelection(checkbox.closest('tr').id, e.target.checked);
+          }
+        });
+      }
+
+      function handleTaskSelection(taskId, isSelected) {
+        if (isSelected) {
+          selectedTasks.add(taskId);
+        } else {
+          selectedTasks.delete(taskId);
+        }
+        
+        // Update bulk actions button state
+        const bulkButtons = document.querySelectorAll('.bulk-action-btn');
+        bulkButtons.forEach(btn => {
+          btn.disabled = selectedTasks.size === 0;
+        });
+        
+        // Update selected count
+        document.getElementById('selected-count').textContent = `${selectedTasks.size} tasks selected`;
+      }
+
+      function completeTask(taskId) {
+        const taskRow = document.getElementById(taskId);
+        if (!taskRow) return;
+        
+        // Update status
+        const statusCell = taskRow.querySelector('td:nth-child(6)');
+        statusCell.innerHTML = '<span class="status-indicator status-good"></span> Completed';
+        
+        // Update row styling
+        taskRow.classList.add('completed');
+        
+        // Disable complete button
+        const completeBtn = taskRow.querySelector('.complete-btn');
+        if (completeBtn) completeBtn.disabled = true;
+        
+        // Update checkboxes
+        const checkbox = taskRow.querySelector('.task-checkbox');
+        checkbox.checked = true;
+        checkbox.disabled = true;
+        
+        // Update stats
+        updateTaskStats();
+        
+        // Show success message
+        showToast('Task marked as completed!', 'success');
+      }
+
+      function editTask(taskId) {
+        const taskRow = document.getElementById(taskId);
+        if (!taskRow) return;
+        
+        // Get task data
+        const taskName = taskRow.querySelector('td:nth-child(2) > div:first-child').textContent;
+        const dueDate = taskRow.querySelector('td:nth-child(3)').textContent;
+        const crop = taskRow.querySelector('td:nth-child(4)').textContent;
+        const priority = taskRow.querySelector('td:nth-child(5) span').classList.contains('priority-high') ? 'High' : 
+                        taskRow.querySelector('td:nth-child(5) span').classList.contains('priority-medium') ? 'Medium' : 'Low';
+        
+        // Set form values
+        document.getElementById('edit-task-id').value = taskId;
+        document.getElementById('edit-task-name').value = taskName;
+        
+        // Set due date (convert to datetime-local format)
+        const now = new Date();
+        let dueDateTime = '';
+        if (dueDate.includes('Today')) {
+          dueDateTime = formatDateTimeLocal(now);
+        } else if (dueDate.includes('Tomorrow')) {
+          const tomorrow = new Date(now);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          dueDateTime = formatDateTimeLocal(tomorrow);
+        } else {
+          // Parse date like "June 25, 2023"
+          const dateParts = dueDate.split(' ');
+          const month = new Date(Date.parse(dateParts[0] + " 1, 2023")).getMonth();
+          const day = parseInt(dateParts[1].replace(',', ''));
+          const year = parseInt(dateParts[2]);
+          const date = new Date(year, month, day, 9, 0); // Default to 9:00 AM
+          dueDateTime = formatDateTimeLocal(date);
+        }
+        document.getElementById('edit-due-date').value = dueDateTime;
+        
+        // Set other values
+        document.getElementById('edit-crop').value = crop;
+        document.getElementById('edit-priority').value = priority;
+        
+        // Get tags
+        const tags = [];
+        taskRow.querySelectorAll('.task-tag').forEach(tag => {
+          tags.push(tag.textContent);
+        });
+        document.getElementById('edit-tags').value = tags.join(', ');
+        
+        // Open modal
+        openModal('editTaskModal');
+      }
+
+      function viewTask(taskId) {
+        const taskRow = document.getElementById(taskId);
+        if (!taskRow) return;
+        
+        // Get task data
+        const taskName = taskRow.querySelector('td:nth-child(2) > div:first-child').textContent;
+        const dueDate = taskRow.querySelector('td:nth-child(3)').textContent;
+        const crop = taskRow.querySelector('td:nth-child(4)').textContent;
+        const priority = taskRow.querySelector('td:nth-child(5)').textContent;
+        const status = taskRow.querySelector('td:nth-child(6)').textContent;
+        
+        // Get tags
+        const tags = [];
+        taskRow.querySelectorAll('.task-tag').forEach(tag => {
+          tags.push(tag.textContent);
+        });
+        
+        // Build detail content
+        const detailContent = `
+          <div class="form-group">
+            <label>Task Name</label>
+            <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">${taskName}</div>
+          </div>
+          <div class="form-group">
+            <label>Due Date</label>
+            <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">${dueDate}</div>
+          </div>
+          <div class="form-group">
+            <label>Crop</label>
+            <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">${crop}</div>
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">${priority}</div>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">${status}</div>
+          </div>
+          <div class="form-group">
+            <label>Tags</label>
+            <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">${tags.join(', ') || 'No tags'}</div>
+          </div>
+        `;
+        
+        // Set content and open modal
+        document.getElementById('task-detail-content').innerHTML = detailContent;
+        openModal('taskDetailModal');
+      }
+
+      function deleteTask(taskId) {
+        currentConfirmAction = {
+          type: 'delete',
+          taskId: taskId
+        };
+        
+        document.getElementById('confirmation-message').textContent = 'Are you sure you want to delete this task? This action cannot be undone.';
+        openModal('confirmationModal');
+      }
+
+      function handleAddTask(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const taskName = document.getElementById('task-name').value;
+        const dueDate = document.getElementById('due-date').value;
+        const crop = document.getElementById('crop').value;
+        const priority = document.getElementById('priority').value;
+        const description = document.getElementById('description').value;
+        const tags = document.getElementById('tags').value;
+        
+        // Create new task ID
+        const newTaskId = 'task-' + (document.querySelectorAll('#tasks-table tbody tr').length + 1);
+        
+        // Create formatted due date
+        const dueDateObj = new Date(dueDate);
+        const formattedDueDate = formatDueDate(dueDateObj);
+        
+        // Create priority class
+        const priorityClass = priority === 'High' ? 'priority-high' : 
+                             priority === 'Medium' ? 'priority-medium' : 'priority-low';
+        
+        // Create priority icon
+        const priorityIcon = priority === 'High' ? 'fa-exclamation-circle' : 
+                            priority === 'Medium' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+        
+        // Create new row
+        const newRow = document.createElement('tr');
+        newRow.id = newTaskId;
+        newRow.setAttribute('data-priority', priority.toLowerCase());
+        newRow.setAttribute('data-crop', crop.toLowerCase());
+        newRow.setAttribute('data-due', getDueCategory(dueDateObj));
+        
+        newRow.innerHTML = `
+          <td><input type="checkbox" class="task-checkbox"></td>
+          <td>
+            <div>${taskName}</div>
+            <div class="task-tags">
+              ${tags ? tags.split(',').map(tag => `<span class="task-tag">${tag.trim()}</span>`).join('') : ''}
+            </div>
+          </td>
+          <td>${formattedDueDate}</td>
+          <td>${crop}</td>
+          <td><span class="${priorityClass}"><i class="fas ${priorityIcon}"></i> ${priority}</span></td>
+          <td><span class="status-indicator status-warning"></span> Pending</td>
+          <td>
+            <button class="small-btn complete-btn" data-task-id="${newTaskId}" title="Mark Complete">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="small-btn edit-btn" data-task-id="${newTaskId}" title="Edit Task">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="small-btn view-btn" data-task-id="${newTaskId}" title="View Details">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="small-btn danger delete-btn" data-task-id="${newTaskId}" title="Delete Task">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        
+        // Add to table
+        document.querySelector('#tasks-table tbody').appendChild(newRow);
+        
+        // Update stats
+        updateTaskStats();
+        
+        // Close modal and show success message
+        closeModal('addTaskModal');
+        showToast('Task added successfully!', 'success');
+      }
+
+      function handleEditTask(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const taskId = document.getElementById('edit-task-id').value;
+        const taskName = document.getElementById('edit-task-name').value;
+        const dueDate = document.getElementById('edit-due-date').value;
+        const crop = document.getElementById('edit-crop').value;
+        const priority = document.getElementById('edit-priority').value;
+        const tags = document.getElementById('edit-tags').value;
+        
+        // Find the task row
+        const taskRow = document.getElementById(taskId);
+        if (!taskRow) return;
+        
+        // Update task data attributes
+        taskRow.setAttribute('data-priority', priority.toLowerCase());
+        taskRow.setAttribute('data-crop', crop.toLowerCase());
+        
+        // Create formatted due date
+        const dueDateObj = new Date(dueDate);
+        const formattedDueDate = formatDueDate(dueDateObj);
+        taskRow.setAttribute('data-due', getDueCategory(dueDateObj));
+        
+        // Create priority class
+        const priorityClass = priority === 'High' ? 'priority-high' : 
+                             priority === 'Medium' ? 'priority-medium' : 'priority-low';
+        
+        // Create priority icon
+        const priorityIcon = priority === 'High' ? 'fa-exclamation-circle' : 
+                            priority === 'Medium' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+        
+        // Update row content
+        const nameCell = taskRow.querySelector('td:nth-child(2)');
+        nameCell.innerHTML = `
+          <div>${taskName}</div>
+          <div class="task-tags">
+            ${tags ? tags.split(',').map(tag => `<span class="task-tag">${tag.trim()}</span>`).join('') : ''}
+          </div>
+        `;
+        
+        taskRow.querySelector('td:nth-child(3)').textContent = formattedDueDate;
+        taskRow.querySelector('td:nth-child(4)').textContent = crop;
+        taskRow.querySelector('td:nth-child(5)').innerHTML = `<span class="${priorityClass}"><i class="fas ${priorityIcon}"></i> ${priority}</span>`;
+        
+        // Close modal and show success message
+        closeModal('editTaskModal');
+        showToast('Task updated successfully!', 'success');
+      }
+
+      function handleSearch() {
+        const searchTerm = elements.taskSearch.value.toLowerCase();
+        const rows = document.querySelectorAll('#tasks-table tbody tr');
+        
+        rows.forEach(row => {
+          const taskName = row.querySelector('td:nth-child(2) > div:first-child').textContent.toLowerCase();
+          const crop = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+          const priority = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+          
+          if (taskName.includes(searchTerm) || crop.includes(searchTerm) || priority.includes(searchTerm)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      function clearSearch() {
+        elements.taskSearch.value = '';
+        const rows = document.querySelectorAll('#tasks-table tbody tr');
+        rows.forEach(row => {
+          row.style.display = '';
+        });
+      }
+
+      function toggleFilterPanel() {
+        elements.filterPanel.classList.toggle('active');
+      }
+
+      function handleFilterOption(e) {
+        const filter = e.target.getAttribute('data-filter');
+        
+        // Update active state
+        document.querySelectorAll('.filter-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        e.target.classList.add('active');
+        
+        // Apply filter
+        const rows = document.querySelectorAll('#tasks-table tbody tr');
+        rows.forEach(row => {
+          if (filter === 'all') {
+            row.style.display = '';
+          } else if (filter === 'today' && row.getAttribute('data-due') === 'today') {
+            row.style.display = '';
+          } else if (filter === 'week' && (row.getAttribute('data-due') === 'today' || row.getAttribute('data-due') === 'tomorrow')) {
+            row.style.display = '';
+          } else if (filter === 'high' && row.getAttribute('data-priority') === 'high') {
+            row.style.display = '';
+          } else if (filter === 'overdue' && row.getAttribute('data-due') === 'overdue') {
+            row.style.display = '';
+          } else if (filter === 'completed' && row.classList.contains('completed')) {
+            row.style.display = '';
+          } else if (filter === 'lettuce' && row.getAttribute('data-crop') === 'lettuce') {
+            row.style.display = '';
+          } else if (filter === 'tomatoes' && row.getAttribute('data-crop') === 'tomatoes') {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      function bulkAction(action) {
+        if (selectedTasks.size === 0) return;
+        
+        if (action === 'complete') {
+          selectedTasks.forEach(taskId => {
+            completeTask(taskId);
+          });
+          selectedTasks.clear();
+          elements.selectAllTasks.checked = false;
+          closeModal('bulkActionsModal');
+        } else if (action === 'delete') {
+          currentConfirmAction = {
+            type: 'bulk-delete',
+            taskIds: Array.from(selectedTasks)
+          };
+          
+          document.getElementById('confirmation-message').textContent = `Are you sure you want to delete ${selectedTasks.size} tasks? This action cannot be undone.`;
+          openModal('confirmationModal');
+        } else if (action === 'reschedule') {
+          showToast('Reschedule functionality would be implemented here', 'warning');
+        } else if (action === 'priority') {
+          showToast('Change priority functionality would be implemented here', 'warning');
+        }
+      }
+
+      function handleConfirmAction() {
+        if (!currentConfirmAction) return;
+        
+        if (currentConfirmAction.type === 'delete') {
+          const taskRow = document.getElementById(currentConfirmAction.taskId);
+          if (taskRow) {
+            taskRow.remove();
+            updateTaskStats();
+            showToast('Task deleted successfully', 'success');
+          }
+        } else if (currentConfirmAction.type === 'bulk-delete') {
+          currentConfirmAction.taskIds.forEach(taskId => {
+            const taskRow = document.getElementById(taskId);
+            if (taskRow) {
+              taskRow.remove();
+            }
+          });
+          selectedTasks.clear();
+          elements.selectAllTasks.checked = false;
+          updateTaskStats();
+          showToast(`${currentConfirmAction.taskIds.length} tasks deleted successfully`, 'success');
+        }
+        
+        closeModal('confirmationModal');
+        closeModal('bulkActionsModal');
+        currentConfirmAction = null;
+      }
+
+      function handleCompleteAlert(e) {
+        const alertId = e.target.getAttribute('data-alert-id');
+        const alertElement = document.getElementById(alertId);
+        if (alertElement) {
+          alertElement.style.display = 'none';
+          showToast('Alert marked as complete', 'success');
+        }
+      }
+
+      function handleRescheduleAlert(e) {
+        const alertId = e.target.getAttribute('data-alert-id');
+        showToast(`Rescheduling alert: ${alertId}`, 'warning');
+      }
+
+      function handleViewAlert(e) {
+        const alertId = e.target.getAttribute('data-alert-id');
+        const alertElement = document.getElementById(alertId);
+        
+        if (alertId === 'upcoming-alert') {
+          // Create detailed view for upcoming alert
+          const detailContent = `
+            <div class="form-group">
+              <label>Alert Type</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Upcoming Task</div>
+            </div>
+            <div class="form-group">
+              <label>Task</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Harvest - Lettuce</div>
+            </div>
+            <div class="form-group">
+              <label>Scheduled Time</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Tomorrow at 9:00 AM</div>
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Field B</div>
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Check lettuce maturity before harvesting. Bring harvesting tools and containers.</div>
+            </div>
+          `;
+          
+          document.getElementById('task-detail-content').innerHTML = detailContent;
+          document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-bell"></i> Alert Details';
+          openModal('taskDetailModal');
+        } else if (alertId === 'overdue-alert') {
+          // Create detailed view for overdue alert
+          const detailContent = `
+            <div class="form-group">
+              <label>Alert Type</label>
+              <div style="padding: 10px; background: #fff3e0; border-radius: 8px;">Overdue Task</div>
+            </div>
+            <div class="form-group">
+              <label>Task</label>
+              <div style="padding: 10px; background: #fff3e0; border-radius: 8px;">Equipment Maintenance</div>
+            </div>
+            <div class="form-group">
+              <label>Due Date</label>
+              <div style="padding: 10px; background: #fff3e0; border-radius: 8px;">2 days ago</div>
+            </div>
+            <div class="form-group">
+              <label>Equipment</label>
+              <div style="padding: 10px; background: #fff3e0; border-radius: 8px;">Tractor #3, Irrigation System</div>
+            </div>
+            <div class="form-group">
+              <label>Priority</label>
+              <div style="padding: 10px; background: #fff3e0; border-radius: 8px;"><span class="priority-high">High Priority</span></div>
+            </div>
+          `;
+          
+          document.getElementById('task-detail-content').innerHTML = detailContent;
+          document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Overdue Alert Details';
+          openModal('taskDetailModal');
+        }
+      }
+
+      function handleSnoozeAlert(e) {
+        const alertId = e.target.getAttribute('data-alert-id');
+        showToast(`Snoozing alert: ${alertId}`, 'info');
+      }
+
+      function handleAcceptSuggestion(e) {
+        const suggestionId = e.target.getAttribute('data-suggestion-id');
+        const suggestionElement = document.getElementById(suggestionId);
+        if (suggestionElement) {
+          suggestionElement.style.display = 'none';
+          showToast('Suggestion accepted', 'success');
+        }
+      }
+
+      function handleIgnoreSuggestion(e) {
+        const suggestionId = e.target.getAttribute('data-suggestion-id');
+        const suggestionElement = document.getElementById(suggestionId);
+        if (suggestionElement) {
+          suggestionElement.style.display = 'none';
+          showToast('Suggestion ignored', 'info');
+        }
+      }
+
+      function handleDetailsSuggestion(e) {
+        const suggestionId = e.target.getAttribute('data-suggestion-id');
+        
+        if (suggestionId === 'suggestion-1') {
+          // Create detailed view for suggestion 1
+          const detailContent = `
+            <div class="form-group">
+              <label>Suggestion Type</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Task Rescheduling</div>
+            </div>
+            <div class="form-group">
+              <label>Original Task</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Weeding - Lettuce beds</div>
+            </div>
+            <div class="form-group">
+              <label>Recommended Time</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">2:00 PM (instead of 11:00 AM)</div>
+            </div>
+            <div class="form-group">
+              <label>Reason</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Avoid peak sun exposure (UV index: 9) and optimize your energy levels</div>
+            </div>
+            <div class="form-group">
+              <label>Expected Benefit</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Save approximately 2 hours of work time and reduce heat stress</div>
+            </div>
+            <div class="form-group">
+              <label>Weather Conditions</label>
+              <div style="padding: 10px; background: #f8fdf8; border-radius: 8px;">Temperature will drop from 32°C to 28°C, UV index will decrease from 9 to 5</div>
+            </div>
+          `;
+          
+          document.getElementById('task-detail-content').innerHTML = detailContent;
+          document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-robot"></i> AI Suggestion Details';
+          openModal('taskDetailModal');
+        }
+      }
+
+      function handleViewDeal() {
+        // Remove e-commerce functionality, replace with farm-focused action
+        showToast('Opening inventory management...', 'info');
+      }
+
+      function handleExport() {
+        showToast('Exporting task data...', 'info');
+      }
+
+      function handleViewAnalytics() {
+        showToast('Opening analytics dashboard...', 'info');
+      }
+
+      function renderCalendar() {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+                           "July", "August", "September", "October", "November", "December"];
+        
+        // Update month header
+        document.getElementById('current-month').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        
+        // Get first day of month and number of days
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        
+        // Clear previous calendar
+        const calendarDays = document.getElementById('calendar-days');
+        calendarDays.innerHTML = '';
+        
+        // Add empty cells for days before the first day of the month
+        for (let i = 0; i < firstDay; i++) {
+          const emptyCell = document.createElement('div');
+          emptyCell.style.padding = '10px';
+          calendarDays.appendChild(emptyCell);
+        }
+        
+        // Add cells for each day of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayCell = document.createElement('div');
+          dayCell.style.padding = '10px';
+          dayCell.style.textAlign = 'center';
+          dayCell.style.cursor = 'pointer';
+          dayCell.style.borderRadius = '8px';
+          dayCell.style.transition = 'all 0.2s';
+          
+          // Highlight current day
+          const today = new Date();
+          if (currentYear === today.getFullYear() && currentMonth === today.getMonth() && day === today.getDate()) {
+            dayCell.style.backgroundColor = '#e8f5e9';
+            dayCell.style.fontWeight = 'bold';
+          }
+          
+          dayCell.textContent = day;
+          dayCell.addEventListener('click', () => {
+            document.getElementById('selected-date').textContent = `${monthNames[currentMonth]} ${day}, ${currentYear}`;
+            // In a real app, you would filter and show tasks for this date
+            document.getElementById('date-tasks').innerHTML = `<p style="text-align: center; color: #666;">No tasks scheduled for ${monthNames[currentMonth]} ${day}, ${currentYear}</p>`;
+          });
+          
+          calendarDays.appendChild(dayCell);
+        }
+      }
+
+      function updateTaskStats() {
+        const totalTasks = document.querySelectorAll('#tasks-table tbody tr').length;
+        const completedTasks = document.querySelectorAll('#tasks-table tbody tr.completed').length;
+        const pendingTasks = totalTasks - completedTasks;
+        const overdueTasks = document.querySelectorAll('#tasks-table tbody tr[data-due="overdue"]:not(.completed)').length;
+        
+        const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        // Update stats
+        document.getElementById('total-tasks').textContent = totalTasks;
+        document.getElementById('completed-tasks').textContent = completedTasks;
+        document.getElementById('pending-tasks').textContent = pendingTasks;
+        document.getElementById('overdue-tasks').textContent = overdueTasks;
+        
+        // Update progress bar
+        document.getElementById('completion-percentage').textContent = `${completionPercentage}%`;
+        document.getElementById('task-ratio').textContent = `${completedTasks}/${totalTasks} tasks`;
+        document.getElementById('progress-fill').style.width = `${completionPercentage}%`;
+      }
+
+      function setCurrentDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        
+        const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+        document.getElementById('due-date').value = dateTimeString;
+        document.getElementById('edit-due-date').value = dateTimeString;
+      }
+
+      function formatDateTimeLocal(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
+
+      function formatDueDate(date) {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        if (date.toDateString() === now.toDateString()) {
+          return `Today, ${formatTime(date)}`;
+        } else if (date.toDateString() === tomorrow.toDateString()) {
+          return `Tomorrow, ${formatTime(date)}`;
+        } else {
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+                             "July", "August", "September", "October", "November", "December"];
+          return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        }
+      }
+
+      function formatTime(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        return `${hours}:${minutes} ${ampm}`;
+      }
+
+      function getDueCategory(date) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        const dueDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+        if (dueDate.getTime() < today.getTime()) {
+          return 'overdue';
+        } else if (dueDate.getTime() === today.getTime()) {
+          return 'today';
+        } else if (dueDate.getTime() === tomorrow.getTime()) {
+          return 'tomorrow';
+        } else {
+          return 'future';
+        }
+      }
+
+      function showToast(message, type = 'success') {
+        const toast = elements.toast;
+        const toastIcon = elements.toastIcon;
+        const toastMessage = elements.toastMessage;
+        
+        // Set message and icon based on type
+        toastMessage.textContent = message;
+        
+        if (type === 'success') {
+          toast.className = 'toast';
+          toastIcon.className = 'fas fa-check-circle';
+        } else if (type === 'error') {
+          toast.className = 'toast error';
+          toastIcon.className = 'fas fa-exclamation-circle';
+        } else if (type === 'warning') {
+          toast.className = 'toast warning';
+          toastIcon.className = 'fas fa-exclamation-triangle';
+        } else {
+          toast.className = 'toast';
+          toastIcon.className = 'fas fa-info-circle';
+        }
+        
+        // Show toast
+        toast.classList.add('show');
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
     });
   </script>
 </body>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FarmScape - Data Analytics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* Reset and base styling */
     * {
@@ -253,6 +254,34 @@
       padding: 6px 12px;
       font-size: 0.9em;
     }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4caf50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .toast.error {
+      background-color: #f44336;
+    }
 
     /* Responsive design */
     @media (max-width: 768px) {
@@ -290,7 +319,6 @@
           <li><a href="task-management.html"><i class="fas fa-tasks"></i> Task Management</a></li>
           <li><a href="inventory.html"><i class="fas fa-boxes"></i> Inventory</a></li>
           <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="marketplace.html"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
           <li><a href="expert-help.html"><i class="fas fa-user-tie"></i> Expert Help</a></li>
           <li><a class="active" href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
           <li><a href="community.html"><i class="fas fa-users"></i> Community</a></li>
@@ -299,7 +327,7 @@
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
         <div style="display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.8); font-size: 0.9em;">
           <i class="fas fa-cloud-upload-alt"></i>
-          <span>Last sync: 2 min ago</span>
+          <span>Last sync: <span id="last-sync-time">2 min ago</span></span>
         </div>
       </div>
     </aside>
@@ -322,13 +350,13 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3><i class="fas fa-chart-line"></i> Crop Performance</h3>
               <div style="display: flex; gap: 10px;">
-                <select style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+                <select id="timeRangeSelect" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
                   <option>Last 7 Days</option>
                   <option>Last 30 Days</option>
                   <option selected>This Season</option>
                   <option>Custom Range</option>
                 </select>
-                <button class="secondary"><i class="fas fa-download"></i> Export</button>
+                <button id="exportCropData" class="secondary"><i class="fas fa-download"></i> Export</button>
               </div>
             </div>
             <div class="chart-container">
@@ -486,13 +514,13 @@
                 
                 <div class="form-group">
                   <label>
-                    <input type="checkbox" style="margin-right: 8px;">
+                    <input type="checkbox" id="includeRecommendations" style="margin-right: 8px;">
                     Include recommendations
                   </label>
                 </div>
                 
                 <div style="margin-top: 20px;">
-                  <button><i class="fas fa-file-download"></i> Generate Report</button>
+                  <button id="generateReportBtn"><i class="fas fa-file-download"></i> Generate Report</button>
                 </div>
               </div>
             </div>
@@ -502,35 +530,251 @@
     </main>
   </div>
 
+  <!-- Toast notification element -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-message">Operation completed successfully</span>
+  </div>
+
   <script>
-    // Simple page routing
+    // Chart instances
+    let cropPerformanceChart, waterUsageChart, taskCompletionChart, financialChart;
+    
+    // Data for charts
+    const cropData = {
+      'Last 7 Days': {
+        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+        datasets: [
+          { label: 'Tomatoes', data: [65, 68, 72, 75, 78, 80, 82], borderColor: '#4caf50', backgroundColor: 'rgba(76, 175, 80, 0.1)' },
+          { label: 'Lettuce', data: [45, 48, 52, 55, 58, 60, 62], borderColor: '#8bc34a', backgroundColor: 'rgba(139, 195, 74, 0.1)' },
+          { label: 'Basil', data: [35, 38, 42, 45, 48, 50, 52], borderColor: '#cddc39', backgroundColor: 'rgba(205, 220, 57, 0.1)' },
+          { label: 'Spinach', data: [55, 58, 62, 65, 68, 70, 72], borderColor: '#ffc107', backgroundColor: 'rgba(255, 193, 7, 0.1)' }
+        ]
+      },
+      'Last 30 Days': {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          { label: 'Tomatoes', data: [65, 72, 78, 82], borderColor: '#4caf50', backgroundColor: 'rgba(76, 175, 80, 0.1)' },
+          { label: 'Lettuce', data: [45, 52, 58, 62], borderColor: '#8bc34a', backgroundColor: 'rgba(139, 195, 74, 0.1)' },
+          { label: 'Basil', data: [35, 42, 48, 52], borderColor: '#cddc39', backgroundColor: 'rgba(205, 220, 57, 0.1)' },
+          { label: 'Spinach', data: [55, 62, 68, 72], borderColor: '#ffc107', backgroundColor: 'rgba(255, 193, 7, 0.1)' }
+        ]
+      },
+      'This Season': {
+        labels: ['Month 1', 'Month 2', 'Month 3'],
+        datasets: [
+          { label: 'Tomatoes', data: [65, 75, 82], borderColor: '#4caf50', backgroundColor: 'rgba(76, 175, 80, 0.1)' },
+          { label: 'Lettuce', data: [45, 55, 62], borderColor: '#8bc34a', backgroundColor: 'rgba(139, 195, 74, 0.1)' },
+          { label: 'Basil', data: [35, 45, 52], borderColor: '#cddc39', backgroundColor: 'rgba(205, 220, 57, 0.1)' },
+          { label: 'Spinach', data: [55, 65, 72], borderColor: '#ffc107', backgroundColor: 'rgba(255, 193, 7, 0.1)' }
+        ]
+      }
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize charts (mock data)
+      // Initialize all charts
       initializeCharts();
       
-      // Form submissions
-      setupFormHandlers();
+      // Setup event handlers
+      setupEventHandlers();
+      
+      // Update sync time
+      updateSyncTime();
     });
     
     function initializeCharts() {
-      // Mock chart initialization
-      // In a real app, you would use a library like Chart.js
-      console.log('Charts initialized with mock data');
+      // Crop Performance Chart
+      const cropCtx = document.getElementById('cropPerformanceChart').getContext('2d');
+      cropPerformanceChart = new Chart(cropCtx, {
+        type: 'line',
+        data: cropData['This Season'],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Crop Growth Over Time'
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: 'Growth Index'
+              }
+            }
+          }
+        }
+      });
       
-      // Simulate chart rendering
-      const chartContainers = document.querySelectorAll('.chart-container');
-      chartContainers.forEach(container => {
-        container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Chart visualization would appear here with real data</div>';
+      // Water Usage Chart
+      const waterCtx = document.getElementById('waterUsageChart').getContext('2d');
+      waterUsageChart = new Chart(waterCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          datasets: [{
+            label: 'Water Usage (L)',
+            data: [320, 300, 290, 270],
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Liters'
+              }
+            }
+          }
+        }
+      });
+      
+      // Task Completion Chart
+      const taskCtx = document.getElementById('taskCompletionChart').getContext('2d');
+      taskCompletionChart = new Chart(taskCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed', 'Pending', 'Overdue'],
+          datasets: [{
+            data: [87, 10, 3],
+            backgroundColor: [
+              '#4caf50',
+              '#ffc107',
+              '#f44336'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+      
+      // Financial Chart
+      const financialCtx = document.getElementById('financialChart').getContext('2d');
+      financialChart = new Chart(financialCtx, {
+        type: 'pie',
+        data: {
+          labels: ['Sales', 'Costs', 'Profit'],
+          datasets: [{
+            data: [245.5, 128.75, 116.75],
+            backgroundColor: [
+              '#4caf50',
+              '#f44336',
+              '#2196f3'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
       });
     }
     
-    function setupFormHandlers() {
-      // Report form
-      document.getElementById('reportForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Report generation started. You will receive it by email shortly.');
-        this.reset();
+    function setupEventHandlers() {
+      // Time range selector for crop performance
+      document.getElementById('timeRangeSelect').addEventListener('change', function() {
+        const selectedRange = this.value;
+        if (cropData[selectedRange]) {
+          cropPerformanceChart.data = cropData[selectedRange];
+          cropPerformanceChart.update();
+          showToast(`Showing data for ${selectedRange}`);
+        }
       });
+      
+      // Export crop data button
+      document.getElementById('exportCropData').addEventListener('click', function() {
+        const timeRange = document.getElementById('timeRangeSelect').value;
+        showToast(`Exporting ${timeRange} crop data as CSV`);
+        
+        // Simulate download
+        setTimeout(() => {
+          showToast('Crop data exported successfully!');
+        }, 1500);
+      });
+      
+      // Generate report button
+      document.getElementById('generateReportBtn').addEventListener('click', function() {
+        const reportType = document.getElementById('reportType').value;
+        const timePeriod = document.getElementById('timePeriod').value;
+        const format = document.getElementById('reportFormat').value;
+        const email = document.getElementById('emailAddress').value;
+        const includeRec = document.getElementById('includeRecommendations').checked;
+        
+        if (!email) {
+          showToast('Please enter an email address', true);
+          return;
+        }
+        
+        showToast(`Generating ${reportType} report for ${timePeriod}...`);
+        
+        // Simulate report generation
+        setTimeout(() => {
+          showToast(`Report generated and sent to ${email}`);
+        }, 2000);
+      });
+      
+      // Simulate sync functionality
+      const syncElement = document.querySelector('.fa-cloud-upload-alt').parentElement;
+      syncElement.style.cursor = 'pointer';
+      syncElement.addEventListener('click', function() {
+        showToast('Syncing data...');
+        setTimeout(() => {
+          updateSyncTime();
+          showToast('Data synced successfully!');
+        }, 1500);
+      });
+    }
+    
+    function updateSyncTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('last-sync-time').textContent = timeString;
+    }
+    
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = message;
+      
+      if (isError) {
+        toast.classList.add('error');
+      } else {
+        toast.classList.remove('error');
+      }
+      
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     }
   </script>
 </body>

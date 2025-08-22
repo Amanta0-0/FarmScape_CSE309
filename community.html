@@ -317,6 +317,49 @@
       color: #666;
     }
 
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      color: #2f5d3f;
+      font-size: 1.5em;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #666;
+    }
+
     /* Responsive design */
     @media (max-width: 768px) {
       .dashboard-container {
@@ -353,7 +396,6 @@
           <li><a href="task-management.html"><i class="fas fa-tasks"></i> Task Management</a></li>
           <li><a href="inventory.html"><i class="fas fa-boxes"></i> Inventory</a></li>
           <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="marketplace.html"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
           <li><a href="expert-help.html"><i class="fas fa-user-tie"></i> Expert Help</a></li>
           <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
           <li><a class="active" href="community.html"><i class="fas fa-users"></i> Community</a></li>
@@ -384,7 +426,7 @@
           <div class="card" style="grid-column: span 2;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3><i class="fas fa-comments"></i> Popular Discussions</h3>
-              <button><i class="fas fa-plus"></i> New Topic</button>
+              <button id="newTopicBtn"><i class="fas fa-plus"></i> New Topic</button>
             </div>
             
             <div class="forum-topics">
@@ -456,19 +498,19 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3><i class="fas fa-users"></i> Community Chat</h3>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 0.9em; color: #666;">12 members online</span>
-                <button class="secondary"><i class="fas fa-user-plus"></i> Invite</button>
+                <span style="font-size: 0.9em; color: #666;"><span id="onlineCount">12</span> members online</span>
+                <button id="inviteBtn" class="secondary"><i class="fas fa-user-plus"></i> Invite</button>
               </div>
             </div>
             
-            <div style="border: 1px solid #ddd; border-radius: 8px; height: 400px; padding: 15px; margin-bottom: 15px; overflow-y: auto; background: white; display: flex; flex-direction: column;">
+            <div id="chatContainer" style="border: 1px solid #ddd; border-radius: 8px; height: 400px; padding: 15px; margin-bottom: 15px; overflow-y: auto; background: white; display: flex; flex-direction: column;">
               <div style="margin-bottom: 15px; display: flex; justify-content: center;">
                 <div style="background-color: #f5f5f5; padding: 5px 15px; border-radius: 12px; font-size: 0.8em; color: #666;">
                   Today, June 15
                 </div>
               </div>
               
-              <div style="margin-bottom: 15px; display: flex;">
+              <div class="chat-message" style="margin-bottom: 15px; display: flex;">
                 <div style="margin-right: 10px;">
                   <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">UF</div>
                 </div>
@@ -480,7 +522,7 @@
                 </div>
               </div>
               
-              <div style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
+              <div class="chat-message" style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
                 <div style="text-align: right;">
                   <div style="font-weight: bold; color: #2f5d3f;">You (10:18 AM):</div>
                   <div style="background-color: #e8f5e9; padding: 10px 15px; border-radius: 12px 0 12px 12px; max-width: 70%; margin-left: auto;">
@@ -492,7 +534,7 @@
                 </div>
               </div>
               
-              <div style="margin-bottom: 15px; display: flex;">
+              <div class="chat-message" style="margin-bottom: 15px; display: flex;">
                 <div style="margin-right: 10px;">
                   <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">GR</div>
                 </div>
@@ -504,7 +546,7 @@
                 </div>
               </div>
               
-              <div style="margin-bottom: 15px; display: flex;">
+              <div class="chat-message" style="margin-bottom: 15px; display: flex;">
                 <div style="margin-right: 10px;">
                   <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">SV</div>
                 </div>
@@ -533,36 +575,195 @@
     </main>
   </div>
 
+  <!-- New Topic Modal -->
+  <div id="newTopicModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Topic</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <form id="newTopicForm">
+        <div class="form-group">
+          <label for="topicTitle">Topic Title</label>
+          <input type="text" id="topicTitle" placeholder="What's your question or topic?" required>
+        </div>
+        <div class="form-group">
+          <label for="topicCategory">Category</label>
+          <select id="topicCategory" required>
+            <option value="">Select a category</option>
+            <option value="Crop Selection">Crop Selection</option>
+            <option value="Pest Management">Pest Management</option>
+            <option value="Irrigation">Irrigation</option>
+            <option value="Soil Health">Soil Health</option>
+            <option value="Community Events">Community Events</option>
+            <option value="General Discussion">General Discussion</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="topicContent">Content</label>
+          <textarea id="topicContent" rows="5" placeholder="Describe your topic in detail..." required></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="secondary close-modal">Cancel</button>
+          <button type="submit">Create Topic</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Invite Modal -->
+  <div id="inviteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Invite to Community Chat</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <form id="inviteForm">
+        <div class="form-group">
+          <label for="inviteEmail">Email Address</label>
+          <input type="email" id="inviteEmail" placeholder="Enter email address to invite" required>
+        </div>
+        <div class="form-group">
+          <label for="inviteMessage">Personal Message (optional)</label>
+          <textarea id="inviteMessage" rows="3" placeholder="Add a personal message..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="secondary close-modal">Cancel</button>
+          <button type="submit">Send Invitation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    // Simple page routing
+    // Community chat functionality
     document.addEventListener('DOMContentLoaded', function() {
-      // Show community page by default
-      document.querySelector('.sidebar nav a[href="#community"]').classList.add('active');
+      // Modal functionality
+      const modals = document.querySelectorAll('.modal');
+      const newTopicBtn = document.getElementById('newTopicBtn');
+      const newTopicModal = document.getElementById('newTopicModal');
+      const inviteBtn = document.getElementById('inviteBtn');
+      const inviteModal = document.getElementById('inviteModal');
+      const closeModalBtns = document.querySelectorAll('.close-modal');
+      const chatForm = document.getElementById('chatForm');
+      const chatMessage = document.getElementById('chatMessage');
+      const chatContainer = document.getElementById('chatContainer');
+      const onlineCount = document.getElementById('onlineCount');
       
-      // Set up navigation
-      document.querySelectorAll('.sidebar nav a').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const pageId = this.getAttribute('href').substring(1);
-          
-          // Update active link
-          document.querySelectorAll('.sidebar nav a').forEach(navLink => {
-            navLink.classList.remove('active');
-          });
-          this.classList.add('active');
+      // Open modals
+      newTopicBtn.addEventListener('click', () => newTopicModal.style.display = 'flex');
+      inviteBtn.addEventListener('click', () => inviteModal.style.display = 'flex');
+      
+      // Close modals
+      closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modals.forEach(modal => modal.style.display = 'none');
         });
       });
       
-      // Form submissions
-      document.getElementById('chatForm')?.addEventListener('submit', function(e) {
+      // Click outside modal to close
+      modals.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            modal.style.display = 'none';
+          }
+        });
+      });
+      
+      // New topic form submission
+      document.getElementById('newTopicForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const messageInput = document.getElementById('chatMessage');
-        if (messageInput.value.trim()) {
-          // In a real app, this would send to a server
-          console.log('Message sent:', messageInput.value);
-          messageInput.value = '';
+        const title = document.getElementById('topicTitle').value;
+        const category = document.getElementById('topicCategory').value;
+        
+        // In a real app, this would send to a server
+        alert(`Topic "${title}" created in ${category} category!`);
+        newTopicModal.style.display = 'none';
+        this.reset();
+      });
+      
+      // Invite form submission
+      document.getElementById('inviteForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('inviteEmail').value;
+        
+        // In a real app, this would send to a server
+        alert(`Invitation sent to ${email}!`);
+        inviteModal.style.display = 'none';
+        this.reset();
+      });
+      
+      // Chat form submission
+      chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (chatMessage.value.trim()) {
+          addMessage(chatMessage.value, 'You', 'JD', true);
+          chatMessage.value = '';
+          
+          // Simulate responses after a delay
+          setTimeout(() => simulateResponse(), 1000 + Math.random() * 2000);
         }
       });
+      
+      // Add a message to the chat
+      function addMessage(text, sender, initials, isYou = false) {
+        const now = new Date();
+        const time = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message';
+        messageDiv.style.marginBottom = '15px';
+        messageDiv.style.display = 'flex';
+        messageDiv.style.justifyContent = isYou ? 'flex-end' : 'flex-start';
+        
+        messageDiv.innerHTML = `
+          ${!isYou ? `
+            <div style="margin-right: 10px;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #e8f5e9; display: flex; align-items: center; justify-content: center; font-weight: bold;">${initials}</div>
+            </div>
+          ` : ''}
+          <div style="${isYou ? 'text-align: right;' : ''}">
+            <div style="font-weight: bold; color: #2f5d3f;">${sender} (${time}):</div>
+            <div style="background-color: ${isYou ? '#e8f5e9' : '#f5f5f5'}; padding: 10px 15px; border-radius: ${isYou ? '12px 0 12px 12px' : '0 12px 12px 12px'}; max-width: 70%; ${isYou ? 'margin-left: auto;' : ''}">
+              ${text}
+            </div>
+          </div>
+          ${isYou ? `
+            <div style="margin-left: 10px;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #4caf50; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">${initials}</div>
+            </div>
+          ` : ''}
+        `;
+        
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+      
+      // Simulate community responses
+      function simulateResponse() {
+        const responses = [
+          {text: "That's a great point! I've had similar experiences with my setup.", sender: "UrbanFarmer23", initials: "UF"},
+          {text: "Has anyone tried vertical gardening for strawberries? I'm considering it.", sender: "GreenRoofGuru", initials: "GR"},
+          {text: "I recommend using a drip irrigation system for consistent watering.", sender: "SkyVeggies", initials: "SV"},
+          {text: "Just harvested my first batch of cherry tomatoes! So rewarding!", sender: "RooftopNewbie", initials: "RN"},
+          {text: "Does anyone have tips for dealing with aphids organically?", sender: "EcoGrower", initials: "EG"}
+        ];
+        
+        const response = responses[Math.floor(Math.random() * responses.length)];
+        addMessage(response.text, response.sender, response.initials);
+        
+        // Randomly update online count
+        if (Math.random() > 0.7) {
+          const change = Math.random() > 0.5 ? 1 : -1;
+          const newCount = Math.max(5, parseInt(onlineCount.textContent) + change);
+          onlineCount.textContent = newCount;
+        }
+      }
+      
+      // Simulate initial chat activity
+      setTimeout(() => {
+        addMessage("Welcome to the community chat! Feel free to ask any questions about rooftop farming.", "CommunityAdmin", "CA");
+      }, 1000);
     });
   </script>
 </body>

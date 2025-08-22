@@ -309,6 +309,78 @@
       background-color: #f9f9f9;
     }
 
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
+    }
+
     /* Responsive design */
     @media (max-width: 768px) {
       .dashboard-container {
@@ -335,6 +407,10 @@
       .expert-cards {
         grid-template-columns: 1fr;
       }
+
+      .expert-actions {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -346,10 +422,9 @@
         <ul>
           <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
           <li><a href="crop-management.html"><i class="fas fa-seedling"></i> Crop Management</a></li>
-          <li><a href="#task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
+          <li><a href="task-management"><i class="fas fa-tasks"></i> Task Management</a></li>
           <li><a href="inventory.html"><i class="fas fa-boxes"></i> Inventory</a></li>
           <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="marketplace.html"><i class="fas fa-shopping-basket"></i> Marketplace</a></li>
           <li><a class="active" href="expert-help.html"><i class="fas fa-headset"></i> Expert Help</a></li>
           <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
           <li><a href="community.html"><i class="fas fa-users"></i> Community</a></li>
@@ -381,14 +456,14 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3><i class="fas fa-user-tie"></i> Available Experts</h3>
               <div style="display: flex; gap: 10px;">
-                <select style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+                <select id="specialtyFilter" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
                   <option>All Specialties</option>
                   <option>Urban Agriculture</option>
                   <option>Hydroponics</option>
                   <option>Pest Control</option>
                   <option>Soil Health</option>
                 </select>
-                <button class="secondary"><i class="fas fa-sliders-h"></i> Filters</button>
+                <button class="secondary" id="filterBtn"><i class="fas fa-sliders-h"></i> Filters</button>
               </div>
             </div>
             
@@ -416,8 +491,8 @@
                   <span style="background-color: #e8f5e9; color: #2f5d3f; padding: 3px 8px; border-radius: 12px; font-size: 0.8em;">Urban Ag</span>
                 </div>
                 <div class="expert-actions">
-                  <button><i class="fas fa-video"></i> Video Consult ($45/hr)</button>
-                  <button class="secondary"><i class="fas fa-envelope"></i> Message ($25)</button>
+                  <button class="video-consult-btn" data-expert="Dr. Sarah Green"><i class="fas fa-video"></i> Video Consult</button>
+                  <button class="message-consult-btn" data-expert="Dr. Sarah Green"><i class="fas fa-envelope"></i> Message</button>
                 </div>
               </div>
               
@@ -444,8 +519,8 @@
                   <span style="background-color: #e8f5e9; color: #2f5d3f; padding: 3px 8px; border-radius: 12px; font-size: 0.8em;">Composting</span>
                 </div>
                 <div class="expert-actions">
-                  <button><i class="fas fa-video"></i> Video Consult ($50/hr)</button>
-                  <button class="secondary"><i class="fas fa-envelope"></i> Message ($30)</button>
+                  <button class="video-consult-btn" data-expert="Prof. Michael Brown"><i class="fas fa-video"></i> Video Consult</button>
+                  <button class="message-consult-btn" data-expert="Prof. Michael Brown"><i class="fas fa-envelope"></i> Message</button>
                 </div>
               </div>
               
@@ -472,8 +547,8 @@
                   <span style="background-color: #e8f5e9; color: #2f5d3f; padding: 3px 8px; border-radius: 12px; font-size: 0.8em;">Microgreens</span>
                 </div>
                 <div class="expert-actions">
-                  <button><i class="fas fa-video"></i> Video Consult ($40/hr)</button>
-                  <button class="secondary"><i class="fas fa-envelope"></i> Message ($20)</button>
+                  <button class="video-consult-btn" data-expert="Lisa Chen"><i class="fas fa-video"></i> Video Consult</button>
+                  <button class="message-consult-btn" data-expert="Lisa Chen"><i class="fas fa-envelope"></i> Message</button>
                 </div>
               </div>
             </div>
@@ -484,7 +559,7 @@
           <div class="card" style="grid-column: span 2;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3><i class="fas fa-comments"></i> Your Consultations</h3>
-              <button class="secondary"><i class="fas fa-history"></i> View History</button>
+              <button class="secondary" id="viewHistoryBtn"><i class="fas fa-history"></i> View History</button>
             </div>
             <table>
               <thead>
@@ -510,8 +585,8 @@
                   <td>Organic pest control</td>
                   <td><span class="status-indicator status-warning"></span> Scheduled (June 20)</td>
                   <td>
-                    <button class="small-btn"><i class="fas fa-video"></i> Join</button>
-                    <button class="small-btn secondary"><i class="fas fa-edit"></i> Reschedule</button>
+                    <button class="small-btn join-btn"><i class="fas fa-video"></i> Join</button>
+                    <button class="small-btn secondary reschedule-btn"><i class="fas fa-edit"></i> Reschedule</button>
                   </td>
                 </tr>
                 <tr>
@@ -526,8 +601,8 @@
                   <td>Hydroponic system setup</td>
                   <td><span class="status-indicator status-good"></span> Completed</td>
                   <td>
-                    <button class="small-btn secondary"><i class="fas fa-file-alt"></i> Notes</button>
-                    <button class="small-btn secondary"><i class="fas fa-redo"></i> Rebook</button>
+                    <button class="small-btn secondary view-notes-btn"><i class="fas fa-file-alt"></i> Notes</button>
+                    <button class="small-btn secondary rebook-btn"><i class="fas fa-redo"></i> Rebook</button>
                   </td>
                 </tr>
                 <tr>
@@ -542,7 +617,7 @@
                   <td>Space optimization</td>
                   <td><span class="status-indicator status-good"></span> Completed</td>
                   <td>
-                    <button class="small-btn secondary"><i class="fas fa-envelope-open"></i> View</button>
+                    <button class="small-btn secondary view-message-btn"><i class="fas fa-envelope-open"></i> View</button>
                   </td>
                 </tr>
               </tbody>
@@ -557,23 +632,23 @@
               <p style="margin-bottom: 15px;">Get instant answers to your farming questions from our AI assistant:</p>
               
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                <button class="secondary" style="text-align: left; justify-content: flex-start;">
+                <button class="secondary ai-question-btn" data-question="Why are my tomato leaves turning yellow?">
                   <i class="fas fa-leaf"></i> Why are my tomato leaves turning yellow?
                 </button>
-                <button class="secondary" style="text-align: left; justify-content: flex-start;">
+                <button class="secondary ai-question-btn" data-question="Best watering schedule for rooftop lettuce?">
                   <i class="fas fa-tint"></i> Best watering schedule for rooftop lettuce?
                 </button>
-                <button class="secondary" style="text-align: left; justify-content: flex-start;">
+                <button class="secondary ai-question-btn" data-question="Natural pest control for basil plants?">
                   <i class="fas fa-bug"></i> Natural pest control for basil plants?
                 </button>
-                <button class="secondary" style="text-align: left; justify-content: flex-start;">
+                <button class="secondary ai-question-btn" data-question="Dealing with excessive sun exposure?">
                   <i class="fas fa-sun"></i> Dealing with excessive sun exposure?
                 </button>
               </div>
               
               <div style="display: flex; gap: 10px;">
-                <input type="text" placeholder="Ask any farming question..." style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd;">
-                <button><i class="fas fa-paper-plane"></i></button>
+                <input type="text" id="aiQuestionInput" placeholder="Ask any farming question..." style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd;">
+                <button id="askAiBtn"><i class="fas fa-paper-plane"></i></button>
               </div>
             </div>
           </div>
@@ -582,37 +657,277 @@
     </main>
   </div>
 
+  <!-- Consultation Modal -->
+  <div id="consultModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Book Consultation</h2>
+        <span class="close">&times;</span>
+      </div>
+      <form id="consultForm">
+        <input type="hidden" id="consultExpert">
+        <input type="hidden" id="consultType">
+        
+        <div class="form-group">
+          <label for="consultDate">Date</label>
+          <input type="date" id="consultDate" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="consultTime">Time</label>
+          <input type="time" id="consultTime" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="consultTopic">Topic/Question</label>
+          <textarea id="consultTopic" rows="3" required></textarea>
+        </div>
+        
+        <button type="submit" id="confirmBookingBtn">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- AI Response Modal -->
+  <div id="aiResponseModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>AI Farming Assistant</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div id="aiResponseContent">
+        <p>Here's some information about your question:</p>
+      </div>
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="secondary" id="closeAiModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const navLinks = document.querySelectorAll('.sidebar nav a');
-    const pages = document.querySelectorAll('.page');
-
-    function showPage(pageId) {
-      // Show selected page, hide others
-      pages.forEach(page => {
-        page.style.display = (page.id === pageId) ? 'block' : 'none';
-      });
-
-      // Highlight the active link
-      navLinks.forEach(link => {
-        const linkPageId = link.getAttribute('href').substring(1);
-        link.classList.toggle('active', linkPageId === pageId);
-      });
+    // Modal elements
+    const consultModal = document.getElementById('consultModal');
+    const aiResponseModal = document.getElementById('aiResponseModal');
+    const closeButtons = document.querySelectorAll('.close');
+    const consultForm = document.getElementById('consultForm');
+    const toast = document.getElementById('toast');
+    
+    // Consultation booking buttons
+    const videoConsultBtns = document.querySelectorAll('.video-consult-btn');
+    const messageConsultBtns = document.querySelectorAll('.message-consult-btn');
+    
+    // Table action buttons
+    const joinBtn = document.querySelector('.join-btn');
+    const rescheduleBtn = document.querySelector('.reschedule-btn');
+    const viewNotesBtn = document.querySelector('.view-notes-btn');
+    const rebookBtn = document.querySelector('.rebook-btn');
+    const viewMessageBtn = document.querySelector('.view-message-btn');
+    
+    // AI Assistant elements
+    const aiQuestionBtns = document.querySelectorAll('.ai-question-btn');
+    const askAiBtn = document.getElementById('askAiBtn');
+    const aiQuestionInput = document.getElementById('aiQuestionInput');
+    
+    // Other buttons
+    const filterBtn = document.getElementById('filterBtn');
+    const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+    const closeAiModal = document.getElementById('closeAiModal');
+    
+    // Show modal function
+    function showModal(modal) {
+      modal.style.display = 'flex';
     }
-
-    // Setup event listeners
-    navLinks.forEach(link => {
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const pageId = this.getAttribute('href').substring(1);
-        showPage(pageId);
+    
+    // Hide modal function
+    function hideModal(modal) {
+      modal.style.display = 'none';
+    }
+    
+    // Show toast notification
+    function showToast(message, isSuccess = true) {
+      toast.textContent = message;
+      toast.style.backgroundColor = isSuccess ? '#4caf50' : '#f44336';
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+    
+    // Handle consultation booking
+    function handleConsultationBooking(event, type) {
+      const expert = event.target.getAttribute('data-expert');
+      
+      document.getElementById('consultExpert').value = expert;
+      document.getElementById('consultType').value = type;
+      document.getElementById('modalTitle').textContent = `Book ${type} with ${expert}`;
+      
+      // Set minimum date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('consultDate').setAttribute('min', today);
+      
+      showModal(consultModal);
+    }
+    
+    // Handle AI response
+    function handleAIResponse(question) {
+      const responses = {
+        "Why are my tomato leaves turning yellow?": "Yellowing tomato leaves can be caused by several factors: overwatering, nutrient deficiencies (particularly nitrogen), or diseases like early blight. Check soil moisture, ensure proper fertilization, and inspect for spots or mold on leaves.",
+        "Best watering schedule for rooftop lettuce?": "Rooftop lettuce typically needs watering 2-3 times per week, but this depends on your climate and container size. Check soil moisture 1-2 inches deep - water when dry. Morning watering is best to prevent evaporation and fungal issues.",
+        "Natural pest control for basil plants?": "For natural pest control on basil: 1) Neem oil spray, 2) Companion planting with marigolds, 3) Hand-remove larger pests, 4) Garlic or chili pepper spray. Avoid chemical pesticides if you plan to consume the leaves.",
+        "Dealing with excessive sun exposure?": "For excessive sun: 1) Use shade cloth (30-50% density) during hottest hours, 2) Mulch around plants to retain moisture, 3) Water deeply in early morning, 4) Consider moving containers to slightly shaded areas during peak sun hours.",
+        "default": "I'd be happy to help with your farming question! Based on my knowledge, I recommend checking soil moisture levels first, ensuring proper drainage, and examining plants for signs of pests or nutrient deficiencies. For more specific advice, could you provide additional details about your setup?"
+      };
+      
+      const response = responses[question] || responses["default"];
+      document.getElementById('aiResponseContent').innerHTML = `
+        <p><strong>Your question:</strong> ${question}</p>
+        <div style="margin-top: 15px; padding: 15px; background-color: #e8f5e9; border-radius: 8px;">
+          <p>${response}</p>
+        </div>
+        <p style="margin-top: 15px; font-style: italic;">This is AI-generated advice. For serious issues, consider consulting with one of our human experts.</p>
+      `;
+      
+      showModal(aiResponseModal);
+    }
+    
+    // Event listeners for consultation buttons
+    videoConsultBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => handleConsultationBooking(e, 'Video Consultation'));
+    });
+    
+    messageConsultBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => handleConsultationBooking(e, 'Message Consultation'));
+    });
+    
+    // Event listeners for table action buttons
+    joinBtn.addEventListener('click', () => {
+      showToast('Connecting to your video consultation...');
+      // Simulate joining a consultation
+      setTimeout(() => {
+        showToast('You have joined the consultation with Prof. Michael Brown');
+      }, 1500);
+    });
+    
+    rescheduleBtn.addEventListener('click', () => {
+      document.getElementById('consultExpert').value = 'Prof. Michael Brown';
+      document.getElementById('consultType').value = 'Video Consultation';
+      document.getElementById('modalTitle').textContent = 'Reschedule Consultation';
+      document.getElementById('consultTopic').value = 'Organic pest control';
+      
+      showModal(consultModal);
+    });
+    
+    viewNotesBtn.addEventListener('click', () => {
+      handleAIResponse('Hydroponic system setup notes from previous consultation');
+    });
+    
+    rebookBtn.addEventListener('click', () => {
+      document.getElementById('consultExpert').value = 'Dr. Sarah Green';
+      document.getElementById('consultType').value = 'Video Consultation';
+      document.getElementById('modalTitle').textContent = 'Rebook Consultation';
+      document.getElementById('consultTopic').value = 'Follow-up on hydroponic system';
+      
+      showModal(consultModal);
+    });
+    
+    viewMessageBtn.addEventListener('click', () => {
+      handleAIResponse('Space optimization advice from previous message consultation');
+    });
+    
+    // Event listeners for AI assistant
+    aiQuestionBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const question = e.target.getAttribute('data-question');
+        handleAIResponse(question);
       });
     });
+    
+    askAiBtn.addEventListener('click', () => {
+      const question = aiQuestionInput.value.trim();
+      if (question) {
+        handleAIResponse(question);
+        aiQuestionInput.value = '';
+      } else {
+        showToast('Please enter a question', false);
+      }
+    });
+    
+    // Allow pressing Enter in the AI question input
+    aiQuestionInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        askAiBtn.click();
+      }
+    });
+    
+    // Other button events
+    filterBtn.addEventListener('click', () => {
+      const specialty = document.getElementById('specialtyFilter').value;
+      showToast(`Filtering experts by: ${specialty}`);
+    });
+    
+    viewHistoryBtn.addEventListener('click', () => {
+      showToast('Showing all consultation history');
+    });
+    
+    // Form submission
+    consultForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const expert = document.getElementById('consultExpert').value;
+      const type = document.getElementById('consultType').value;
+      const date = document.getElementById('consultDate').value;
+      const time = document.getElementById('consultTime').value;
+      const topic = document.getElementById('consultTopic').value;
+      
+      // Simulate booking process
+      setTimeout(() => {
+        hideModal(consultModal);
+        showToast(`Successfully booked ${type} with ${expert} for ${date} at ${time}`);
+      }, 1000);
+    });
+    
+    // Close modals when clicking on X
+    closeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        hideModal(consultModal);
+        hideModal(aiResponseModal);
+      });
+    });
+    
+    closeAiModal.addEventListener('click', () => {
+      hideModal(aiResponseModal);
+    });
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === consultModal) hideModal(consultModal);
+      if (e.target === aiResponseModal) hideModal(aiResponseModal);
+    });
+    
+    // Navigation between pages (simplified)
+    function showPage(pageId) {
+        // Hide all pages
+        const pages = document.querySelectorAll('.page-content');
+        pages.forEach(page => {
+            page.classList.remove('active');
+        });
 
-    // Show the first page by default
-    const firstPageId = navLinks[0].getAttribute('href').substring(1);
-    showPage(firstPageId);
-  });
+        // Show the selected page
+        const activePage = document.getElementById(pageId);
+        if (activePage) {
+            activePage.classList.add('active');
+        }
+    }
+
+    // Optional: Show the default page when the page loads
+    document.addEventListener('DOMContentLoaded', function () {
+        showPage('expert-help'); 
+    });
 </script>
 
 </body>
